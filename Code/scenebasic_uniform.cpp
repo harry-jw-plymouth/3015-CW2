@@ -24,6 +24,11 @@ using glm::mat3;
 SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.0f)),
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     mesh = ObjMesh::load("media/spot/spot_triangulated.obj");
+    mesh = ObjMesh::load("media/Tree.obj");
+    //mesh = ObjMesh::load("media/swordInStone.obj");
+    if (!mesh) {
+        cerr << "Failed to load mesh: media/swordInStone.obj" << endl;
+    }
 }
 void SceneBasic_Uniform::initScene()
 {
@@ -142,7 +147,9 @@ void SceneBasic_Uniform::drawSpot(const vec3& pos, float rough, int metal, const
     prog.setUniform("Material.Metal", metal);
     prog.setUniform("Material.Color", color);
     model = mat4(1.0f);
+    
     model = glm::translate(model, pos);
+    model = glm::scale(model, vec3(4.0f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.f, 1.f, 0.f));
 
     
