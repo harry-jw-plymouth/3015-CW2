@@ -31,7 +31,10 @@ using glm::radians;
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLSLProgram prog;
+    GLSLProgram Shaders;
+    GLSLProgram SkyBoxShaders;
+
+    SkyBox SkyBox;
 
     Teapot teapot;
     std::unique_ptr<ObjMesh> SwordMesh;
@@ -59,11 +62,13 @@ private:
     void ProcessUserInput(int key, int action);
     void compile();
 public:
+    void SetupSkybox();
+
+    void DrawSkyBox();
     void drawSword(const glm::vec3& pos, float rough, int metal, const glm::vec3& color);
     void DrawRock(const glm::vec3& pos);
     void drawFloor();
     void drawScene();
-    void spitOutDepthBuffer();
 
     void initBuffers();
     float randFloat();

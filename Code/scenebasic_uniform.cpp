@@ -94,9 +94,27 @@ void SceneBasic_Uniform::ProcessUserInput(int key, int action) {
         }
     }
 }
+void SceneBasic_Uniform::SetupSkybox() {
+    SkyBoxShaders.use();
+
+    glEnable(GL_DEPTH_TEST);
+
+    projection = mat4(1.0f);
+    model = mat4(1.0f);
+    float angle = radians(90.0f);
+    GLuint SkyBoxTexture = Texture::loadCubeMap("media/texture/ForestSkyBox/Forest");
+    //  GLuint SkyBoxTexture = Texture::loadHdrCubeMap("../Cw1/media/texture/Skybox/Forest/forest-skyboxes/Brudslojan");
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBoxTexture);
+
+    Shaders.use();
+    
+}
 void SceneBasic_Uniform::initScene()
 {
     compile(); 
+
+    SetupSkybox();
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
@@ -112,22 +130,26 @@ void SceneBasic_Uniform::initScene()
     lightAngle = 0.0f;
     lightRotationSpeed = 1.5f;
 
-    prog.setUniform("Light[0].L", vec3(45.0f));
-	prog.setUniform("Light[0].Position", view * lightPos);
-    prog.setUniform("Light[1].L", vec3(0.3f));
-    prog.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
-    prog.setUniform("Light[2].L", vec3(45.0f));
-    prog.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    Shaders.setUniform("Light[0].L", vec3(45.0f));
+	Shaders.setUniform("Light[0].Position", view * lightPos);
+    Shaders.setUniform("Light[1].L", vec3(0.3f));
+    Shaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
+    Shaders.setUniform("Light[2].L", vec3(45.0f));
+    Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
 }
 
 void SceneBasic_Uniform::compile()
 {
     try {
-        prog.compileShader("shader/NewVertexShader.vert");
-        prog.compileShader("shader/NewFragmentShader.frag");
+        Shaders.compileShader("shader/NewVertexShader.vert");
+        Shaders.compileShader("shader/NewFragmentShader.frag");
       //  prog.compileShader("shader/Geometry_Shader.gs");
-        prog.link();
-        prog.use();
+        Shaders.link();
+        Shaders.use();
+
+        SkyBoxShaders.compileShader("shader/SkyBoxVertexShader.vert");
+        SkyBoxShaders.compileShader("shader/SkyBoxFragmentShader.frag");
+        SkyBoxShaders.link();
 
 
     }
@@ -158,15 +180,34 @@ void SceneBasic_Uniform::update(float t)
 }
 void SceneBasic_Uniform::setMatrices() {
     mat4 mv = view * model;
-    prog.setUniform("ModelViewMatrix", mv);
-    prog.setUniform("NormalMatrix", glm::mat3(mv));
-    prog.setUniform("MVP", projection * mv);
+    Shaders.setUniform("ModelViewMatrix", mv);
+    Shaders.setUniform("NormalMatrix", glm::mat3(mv));
+    Shaders.setUniform("MVP", projection * mv);
 }
+void SceneBasic_Uniform::DrawSkyBox() {
+    //draw sky
+    mat4 model = mat4(1.0f);
 
+    glDepthMask(GL_FALSE);          // disable depth writes
+    glDepthFunc(GL_LEQUAL);
+
+    SkyBoxShaders.use();
+    mat4 skyView = mat4(mat3(view));
+    mat4 mv = skyView * mat4(1.0f);
+
+    SkyBoxShaders.setUniform("MVP", projection * mv);
+    SkyBox.render();
+
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+}
 void SceneBasic_Uniform::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	prog.setUniform("Light[0].Position", view * lightPos);
+    DrawSkyBox();
+
+    Shaders.use();
+	Shaders.setUniform("Light[0].Position", view * lightPos);
     drawScene();
 
 }
@@ -194,9 +235,9 @@ void SceneBasic_Uniform::drawScene() {
 }
 void SceneBasic_Uniform::drawFloor() {
    
-    prog.setUniform("Material.Rough", 0.9f);
-    prog.setUniform("Material.Metal", 0);
-    prog.setUniform("Material.Color", glm::vec3(0.2f));
+    Shaders.setUniform("Material.Rough", 0.9f);
+    Shaders.setUniform("Material.Metal", 0);
+    Shaders.setUniform("Material.Color", glm::vec3(0.2f));
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
@@ -220,9 +261,9 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
     
-    prog.setUniform("Material.Rough", rough);
-    prog.setUniform("Material.Metal", metal);
-    prog.setUniform("Material.Color", color);
+    Shaders.setUniform("Material.Rough", rough);
+    Shaders.setUniform("Material.Metal", metal);
+    Shaders.setUniform("Material.Color", color);
     model = mat4(1.0f);
     
     model = glm::translate(model, pos);
