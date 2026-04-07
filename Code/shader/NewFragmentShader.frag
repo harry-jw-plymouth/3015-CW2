@@ -5,6 +5,10 @@ layout(location = 0) out vec4 FragColor;
 in vec3 Position;
 in vec3 Normal; 
 
+//0 is PBR 
+// 1 is texture
+uniform int RenderType;
+
 const float PI=3.1415926535358979323846;
 
 uniform struct LightInfo{
@@ -69,14 +73,23 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 
 
 void main(){
-	vec3 sum=vec3(0.0);
-	vec3 n=normalize(Normal);
-	for(int i=0;i<3;i++){
-		sum+=microfacetModel(i,Position,n);
+	if(RenderType==1){
+		//texture rendering
+
+	}
+	else{
+		// PBR 
+		vec3 sum=vec3(0.0);
+		vec3 n=normalize(Normal);
+		for(int i=0;i<3;i++){
+			sum+=microfacetModel(i,Position,n);
+		}
+
+		//gamma 
+		sum=pow(sum,vec3(1.0/2.2));
+		FragColor=vec4(sum,1);
 	}
 
-	//gamma 
-	sum=pow(sum,vec3(1.0/2.2));
-	FragColor=vec4(sum,1);
+	
 
 }

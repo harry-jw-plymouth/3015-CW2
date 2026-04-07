@@ -116,6 +116,9 @@ void SceneBasic_Uniform::initScene()
 
     SetupSkybox();
 
+    Shaders.use();
+    Shaders.setUniform("RenderType", 0);
+
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
