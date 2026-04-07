@@ -22,6 +22,7 @@ SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     SwordMesh = ObjMesh::load("media/spot/spot_triangulated.obj");
     SwordMesh = ObjMesh::load("media/Sword.obj");
+    RockMesh = ObjMesh::load("media/Rock07-Base.obj");
     //mesh = ObjMesh::load("media/swordInStone.obj");
 
 }
@@ -178,15 +179,17 @@ void SceneBasic_Uniform::drawScene() {
     //draw metal cows
     float metalRough = 0.43f;
     // gold
-    drawSpot(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
+    drawSword(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
     // copper
-    drawSpot(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+    drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
     //aluminium
-    drawSpot(glm::vec3(-0.f, 0.f, 3.f), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
+    drawSword(glm::vec3(-0.f, 0.f, 3.f), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
+    DrawRock(vec3(-0.0f, -0.5f, 3.0f));
     //titanium
-    drawSpot(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
+    drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
     //silver
-    drawSpot(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+    drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+    DrawRock(vec3(3.0f, -0.5f, 3.0f));
     
 }
 void SceneBasic_Uniform::drawFloor() {
@@ -201,7 +204,20 @@ void SceneBasic_Uniform::drawFloor() {
     setMatrices();
     plane.render();
 }
-void SceneBasic_Uniform::drawSpot(const vec3& pos, float rough, int metal, const vec3& color)
+void SceneBasic_Uniform::DrawRock(const vec3& pos)
+{
+    model = mat4(1.0f);
+
+    model = glm::translate(model, pos);
+    model = glm::scale(model, vec3(0.02f, //horizontal
+        0.03f, // vertical,
+        0.01f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    setMatrices();
+    RockMesh->render();
+}
+void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
     
     prog.setUniform("Material.Rough", rough);
@@ -210,9 +226,10 @@ void SceneBasic_Uniform::drawSpot(const vec3& pos, float rough, int metal, const
     model = mat4(1.0f);
     
     model = glm::translate(model, pos);
-    model = glm::scale(model, vec3(0.1f));
+    model = glm::scale(model, vec3(  0.1f));
   //  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     
     setMatrices();

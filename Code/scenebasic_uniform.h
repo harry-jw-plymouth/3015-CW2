@@ -35,6 +35,7 @@ private:
 
     Teapot teapot;
     std::unique_ptr<ObjMesh> SwordMesh;
+    std::unique_ptr<ObjMesh> RockMesh;
     Plane plane;
 
     float tPrev,lightAngle,lightRotationSpeed;
@@ -48,7 +49,7 @@ private:
     float cameraPitch = 0.0f;
     bool mouseFirstEntry = true;
     float cameraLastXPos = 800.0f / 2.0f;
-    float cameraLastYPos = 600.0f / 2.0f;
+    float cameraLastYPos = 1600.0f / 2.0f;
 
     float deltaTime = 0.0f;
    
@@ -58,7 +59,8 @@ private:
     void ProcessUserInput(int key, int action);
     void compile();
 public:
-    void drawSpot(const glm::vec3& pos, float rough, int metal, const glm::vec3& color);
+    void drawSword(const glm::vec3& pos, float rough, int metal, const glm::vec3& color);
+    void DrawRock(const glm::vec3& pos);
     void drawFloor();
     void drawScene();
     void spitOutDepthBuffer();
