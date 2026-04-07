@@ -1,2 +1,10 @@
-﻿  scenebasic_uniform.cpp
+﻿  main.cpp
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(23,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'main.cpp')
+  
+  scenebasic_uniform.cpp
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(23,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'scenebasic_uniform.cpp')
+  
+  Generating Code...
   Project_Template.vcxproj -> C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\x64\Debug\Project_Template.exe

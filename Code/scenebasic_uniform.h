@@ -20,6 +20,13 @@
 #include "helper/particleutils.h"
 #include "helper/grid.h"
 #include "helper/frustum.h"
+#include "GLFW/glfw3.h";
+
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
+using glm::mat3;
+using glm::radians;
 
 class SceneBasic_Uniform : public Scene
 {
@@ -32,9 +39,23 @@ private:
 
     float tPrev,lightAngle,lightRotationSpeed;
 	glm::vec4 lightPos;
-    
-    
 
+    vec3 EyeCoordinates = vec3(1.0f, 1.25f, 1.25f);
+    vec3 CameraFront = vec3(0.0f, 0.0f, -1.0f);
+    vec3 CameraUp = vec3(0.0f, 1.0f, 0.0f);
+
+    float cameraYaw = -90.0f;
+    float cameraPitch = 0.0f;
+    bool mouseFirstEntry = true;
+    float cameraLastXPos = 800.0f / 2.0f;
+    float cameraLastYPos = 600.0f / 2.0f;
+
+    float deltaTime = 0.0f;
+   
+    float lastFrame = 0.0f;
+
+    void Mouse_CallBack(double Xpos, double Ypos);
+    void ProcessUserInput(int key, int action);
     void compile();
 public:
     void drawSpot(const glm::vec3& pos, float rough, int metal, const glm::vec3& color);

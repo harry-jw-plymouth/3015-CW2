@@ -16,10 +16,7 @@ using std::endl;
 
 #include <sstream>
 
-using glm::vec3;
-using glm::mat4;
-using glm::vec4;
-using glm::mat3;
+
 
 SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.0f)),
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
@@ -27,6 +24,74 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     SwordMesh = ObjMesh::load("media/Sword.obj");
     //mesh = ObjMesh::load("media/swordInStone.obj");
 
+}
+void SceneBasic_Uniform::Mouse_CallBack(double Xpos, double Ypos) {
+    // std::cout << "Moving mouse" << "\n";
+     //Initially no last positions, so sets last positions to current positions
+    if (mouseFirstEntry)
+    {
+        cameraLastXPos = (float)Xpos;
+        cameraLastYPos = (float)Ypos;
+        mouseFirstEntry = false;
+    }  //Sets values for change in position since last frame to current frame
+    float xOffset = (float)Xpos - cameraLastXPos;
+    float yOffset = cameraLastYPos - (float)Ypos;
+
+    //Sets last positions to current positions for next frame
+    cameraLastXPos = (float)Xpos;
+    cameraLastYPos = (float)Ypos;
+
+    //Moderates the change in position based on sensitivity value
+    const float sensitivity = 0.05f;
+    xOffset *= sensitivity;
+    yOffset *= sensitivity;
+
+    //Adjusts yaw & pitch values against changes in positions
+    cameraYaw += xOffset;
+    cameraPitch += yOffset;
+
+    //Prevents turning up & down beyond 90 degrees to look backwards
+    if (cameraPitch > 89.0f)
+    {
+        cameraPitch = 89.0f;
+    }
+    else if (cameraPitch < -89.0f)
+    {
+        cameraPitch = -89.0f;
+    }
+
+    //Modification of direction vector based on mouse turning
+    vec3 direction;
+    direction.x = cos(radians(cameraYaw)) * cos(radians(cameraPitch));
+    direction.y = sin(radians(cameraPitch));
+    direction.z = sin(radians(cameraYaw)) * cos(radians(cameraPitch));
+    CameraFront = normalize(direction);
+}
+void SceneBasic_Uniform::ProcessUserInput(int key, int action) {
+    const float movementSpeed = 2.0f * deltaTime;
+
+    if (action == GLFW_PRESS) {
+        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+            if (key == GLFW_KEY_W) {
+                EyeCoordinates += movementSpeed * CameraFront;
+                //  std::cout << "Key: " << key << std::endl;
+            }
+            else if (key == GLFW_KEY_A) {
+                EyeCoordinates -= normalize(cross(CameraFront, CameraUp)) * movementSpeed;
+                //  std::cout << "Key: " << key << std::endl;
+            }
+            else if (key == GLFW_KEY_S) {
+                EyeCoordinates -= movementSpeed * CameraFront;
+                //   std::cout << "Key: " << key << std::endl;
+            }
+            else if (key == GLFW_KEY_D) {
+                EyeCoordinates += normalize(cross(CameraFront, CameraUp)) * movementSpeed;
+
+
+                //std::cout << "Key: " << key << std::endl;
+            }
+        }
+    }
 }
 void SceneBasic_Uniform::initScene()
 {
