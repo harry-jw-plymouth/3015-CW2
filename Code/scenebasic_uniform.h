@@ -41,7 +41,7 @@ private:
     float tPrev,lightAngle,lightRotationSpeed;
 	glm::vec4 lightPos;
 
-    vec3 EyeCoordinates = vec3(1.0f, 1.25f, 1.25f);
+    vec3 EyeCoordinates = vec3(0.0f, 0.75f, 6.25f);
     vec3 CameraFront = vec3(0.0f, 0.0f, -1.0f);
     vec3 CameraUp = vec3(0.0f, 1.0f, 0.0f);
 
@@ -49,7 +49,7 @@ private:
     float cameraPitch = 0.0f;
     bool mouseFirstEntry = true;
     float cameraLastXPos = 800.0f / 2.0f;
-    float cameraLastYPos = 1600.0f / 2.0f;
+    float cameraLastYPos = 600.0f / 2.0f;
 
     float deltaTime = 0.0f;
    
