@@ -23,12 +23,10 @@ using glm::mat3;
 
 SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.0f)),
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
-    mesh = ObjMesh::load("media/spot/spot_triangulated.obj");
-    mesh = ObjMesh::load("media/Sword.obj");
+    SwordMesh = ObjMesh::load("media/spot/spot_triangulated.obj");
+    SwordMesh = ObjMesh::load("media/Sword.obj");
     //mesh = ObjMesh::load("media/swordInStone.obj");
-    if (!mesh) {
-        cerr << "Failed to load mesh: media/swordInStone.obj" << endl;
-    }
+
 }
 void SceneBasic_Uniform::initScene()
 {
@@ -107,12 +105,6 @@ void SceneBasic_Uniform::drawScene() {
 
     // draw dielectric cows with varying roughness
     int numCows = 9;
-    glm::vec3 cowBaseColor(0.1f, 0.33f, 0.97f);
-    for (int i = 0; i < numCows; i++) {
-        float cowX = i * (10.0f / (numCows - 1)) - 5.0f;
-        float rough = (i + 1) * (1.0f / numCows);
-        drawSpot(glm::vec3(cowX, 0.0f, 0.0f), rough, 0, cowBaseColor);
-    }
 
     //draw metal cows
     float metalRough = 0.43f;
@@ -149,12 +141,13 @@ void SceneBasic_Uniform::drawSpot(const vec3& pos, float rough, int metal, const
     model = mat4(1.0f);
     
     model = glm::translate(model, pos);
-    model = glm::scale(model, vec3(4.0f));
-    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.f, 1.f, 0.f));
+    model = glm::scale(model, vec3(0.1f));
+  //  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.f, 1.f, 0.f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     
     setMatrices();
-    mesh->render();
+    SwordMesh->render();
 }
 void SceneBasic_Uniform::resize(int w, int h)
 {

@@ -27,7 +27,7 @@ private:
     GLSLProgram prog;
 
     Teapot teapot;
-    std::unique_ptr<ObjMesh> mesh;
+    std::unique_ptr<ObjMesh> SwordMesh;
     Plane plane;
 
     float tPrev,lightAngle,lightRotationSpeed;
