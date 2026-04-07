@@ -74,6 +74,17 @@ public:
         scene.initScene();
         scene.resize(fbw, fbh);
 
+        glfwSetWindowUserPointer(window, &scene);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(window,
+            [](GLFWwindow* w, double xpos, double ypos)
+            {
+                Scene* scene = static_cast<Scene*>(glfwGetWindowUserPointer(w));
+
+                scene->Mouse_CallBack(xpos, ypos);
+            }
+        );
+
         // Enter the main loop
         mainLoop(window, scene);
 
@@ -126,8 +137,23 @@ private:
 
             glfwPollEvents();
 			int state = glfwGetKey(window, GLFW_KEY_SPACE);
-			if (state == GLFW_PRESS)
-				scene.animate(!scene.animating());
+            if (state == GLFW_PRESS)
+            {
+                scene.animate(!scene.animating());
+            }
+			
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+                scene.ProcessUserInput(GLFW_KEY_W, GLFW_PRESS);
+            }
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+                scene.ProcessUserInput(GLFW_KEY_A, GLFW_PRESS);
+            }
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+                scene.ProcessUserInput(GLFW_KEY_S, GLFW_PRESS);
+            }
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+                scene.ProcessUserInput(GLFW_KEY_D, GLFW_PRESS);
+            }
         }
     }
 };

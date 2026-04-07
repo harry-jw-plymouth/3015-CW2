@@ -142,6 +142,10 @@ void SceneBasic_Uniform::update(float t)
     if (tPrev == 0.0f) {
         deltaT = 0.0f;
     }
+    deltaTime = deltaT;
+    //update view for updated eye coorindates
+    view = glm::lookAt(EyeCoordinates, EyeCoordinates + CameraFront, CameraUp);
+
     tPrev = t;
     if (animating()) {
         lightAngle = glm::mod(lightAngle + deltaT * lightRotationSpeed, glm::two_pi<float>());
