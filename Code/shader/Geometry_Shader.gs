@@ -1,19 +1,20 @@
 #version 460
 
 //input primatives
-layout(triangles_adjacency ) in;
+//layout(triangles_adjacency ) in;
+layout(triangles ) in;
 layout( triangle_strip, max_vertices = 15)out;
 
 //output primatives
 out vec3 GNormal; //normal used by fragment shader 
-out vec3 GPosition; //positon used for fragment shader 
+out vec3 Gposition; //positon used for fragment shader 
 
 //which triangle edges are silhouette edges
 //0 not edge, 1 is an edge
 flat out int GIsEdge;
 
-in vec3 Normal[];
-in vec3 position[];
+in vec3 VNormal[];
+in vec3 Vposition[];
 
 uniform float EdgeWidth;
 uniform float PctExtend;
@@ -70,17 +71,17 @@ void main(){
     GIsEdge=0; //this triangle is not part of an edge
 
     GNormal=VNormal[0];
-    GPosition=Vposition[0];
+    Gposition=Vposition[0];
     gl_Position=gl_in[0].gl_Position;
     EmitVertex();
 
     GNormal=VNormal[2];
-    GPosition=Vposition[2];
+    Gposition=Vposition[2];
     gl_Position=gl_in[2].gl_Position;
     EmitVertex();
     
     GNormal=VNormal[4];
-    GPosition=Vposition[4];
+    Gposition=Vposition[4];
     gl_Position=gl_in[4].gl_Position;
     EmitVertex();
 

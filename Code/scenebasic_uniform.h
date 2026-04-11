@@ -45,7 +45,7 @@ private:
     GLuint RockTexture;
 
 
-    float tPrev,lightAngle,lightRotationSpeed;
+    float tPrev,angle,lightAngle,lightRotationSpeed;
 	glm::vec4 lightPos;
 
     vec3 EyeCoordinates = vec3(0.0f, 0.75f, 6.25f);

@@ -144,6 +144,15 @@ void SceneBasic_Uniform::initScene()
     Shaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
     Shaders.setUniform("Light[2].L", vec3(45.0f));
     Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
+
+    //silhouette lines set up 
+    Shaders.setUniform("EdgeWidth", 0.015f);
+    Shaders.setUniform("PctExtend", 0.25f);
+    Shaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
+    Shaders.setUniform("TexMaterial.Kd", 0.7f, 0.5f, 0.2f);
+    Shaders.setUniform("TexLight.Position", vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    Shaders.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+    Shaders.setUniform("TexLight.Intensity", 1.0f, 1.0f, 1.0f);
 }
 
 void SceneBasic_Uniform::compile()
@@ -176,6 +185,9 @@ void SceneBasic_Uniform::update(float t)
     deltaTime = deltaT;
     //update view for updated eye coorindates
     view = glm::lookAt(EyeCoordinates, EyeCoordinates + CameraFront, CameraUp);
+
+    angle += 0.25f * deltaT;
+    if (angle > glm::two_pi<float>())angle -= glm::two_pi<float>();
 
     tPrev = t;
     if (animating()) {
