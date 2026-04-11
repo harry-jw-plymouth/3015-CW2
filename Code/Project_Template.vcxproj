@@ -166,6 +166,7 @@
   <ItemGroup>
     <None Include="shader\basic_uniform.frag" />
     <None Include="shader\basic_uniform.vert" />
+    <None Include="shader\Geometry_Shader.gs" />
     <None Include="shader\NewFragmentShader.frag" />
     <None Include="shader\NewVertexShader.vert" />
   </ItemGroup>

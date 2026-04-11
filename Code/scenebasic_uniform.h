@@ -41,6 +41,10 @@ private:
     std::unique_ptr<ObjMesh> RockMesh;
     Plane plane;
 
+    //textures 
+    GLuint RockTexture;
+
+
     float tPrev,lightAngle,lightRotationSpeed;
 	glm::vec4 lightPos;
 
@@ -64,6 +68,7 @@ private:
 public:
     void SetupSkybox();
 
+    void LoadTextures();
     void DrawSkyBox();
     void drawSword(const glm::vec3& pos, float rough, int metal, const glm::vec3& color);
     void DrawRock(const glm::vec3& pos);

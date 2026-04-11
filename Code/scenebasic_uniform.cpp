@@ -26,6 +26,9 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     //mesh = ObjMesh::load("media/swordInStone.obj");
 
 }
+void SceneBasic_Uniform::LoadTextures() {
+    RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
+}
 void SceneBasic_Uniform::Mouse_CallBack(double Xpos, double Ypos) {
     // std::cout << "Moving mouse" << "\n";
      //Initially no last positions, so sets last positions to current positions
@@ -114,6 +117,8 @@ void SceneBasic_Uniform::initScene()
 {
     compile(); 
 
+    LoadTextures();
+
     SetupSkybox();
 
     Shaders.use();
@@ -146,7 +151,7 @@ void SceneBasic_Uniform::compile()
     try {
         Shaders.compileShader("shader/NewVertexShader.vert");
         Shaders.compileShader("shader/NewFragmentShader.frag");
-      //  prog.compileShader("shader/Geometry_Shader.gs");
+        Shaders.compileShader("shader/Geometry_Shader.gs");
         Shaders.link();
         Shaders.use();
 
@@ -233,7 +238,9 @@ void SceneBasic_Uniform::drawScene() {
     drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
     //silver
     drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+
     DrawRock(vec3(3.0f, -0.5f, 3.0f));
+   
     
 }
 void SceneBasic_Uniform::drawFloor() {
@@ -250,6 +257,8 @@ void SceneBasic_Uniform::drawFloor() {
 }
 void SceneBasic_Uniform::DrawRock(const vec3& pos)
 {
+    Shaders.setUniform("RenderType", 1);
+
     model = mat4(1.0f);
 
     model = glm::translate(model, pos);
@@ -260,6 +269,7 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
 
     setMatrices();
     RockMesh->render();
+    Shaders.setUniform("RenderType", 0);
 }
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {

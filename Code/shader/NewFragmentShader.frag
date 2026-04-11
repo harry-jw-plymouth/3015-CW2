@@ -5,7 +5,7 @@ layout(location = 0) out vec4 FragColor;
 in vec3 Position;
 in vec3 Normal; 
 
-//0 is PBR 
+//0 is PBR for metals
 // 1 is texture
 uniform int RenderType;
 
@@ -72,9 +72,11 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 
 
 
+
 void main(){
 	if(RenderType==1){
 		//texture rendering
+		FragColor=vec4(0.0);
 
 	}
 	else{

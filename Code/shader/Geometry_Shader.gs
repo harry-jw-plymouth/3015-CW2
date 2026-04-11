@@ -12,8 +12,8 @@ out vec3 GPosition; //positon used for fragment shader
 //0 not edge, 1 is an edge
 flat out int GIsEdge;
 
-in vec3 VNormal[];
-in vec3 Vposition[];
+in vec3 Normal[];
+in vec3 position[];
 
 uniform float EdgeWidth;
 uniform float PctExtend;
