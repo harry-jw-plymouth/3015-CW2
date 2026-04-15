@@ -21,7 +21,7 @@ using std::endl;
 SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.0f)),
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     SwordMesh = ObjMesh::load("media/spot/spot_triangulated.obj");
-    SwordMesh = ObjMesh::load("media/Sword.obj");
+    SwordMesh = ObjMesh::loadWithAdjacency("media/Sword.obj");
     RockMesh = ObjMesh::loadWithAdjacency("media/Rock07-Base.obj");
     //mesh = ObjMesh::load("media/swordInStone.obj");
 
@@ -180,8 +180,8 @@ void SceneBasic_Uniform::initScene()
     CombinedShaders.setUniform("Material.Kd", 0.7f, 0.5f, 0.2f);
     CombinedShaders.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
 
-    CombinedShaders.setUniform("EdgeWidth", 0.015f);
-    CombinedShaders.setUniform("PctExtend", 0.25f);
+    CombinedShaders.setUniform("EdgeWidth", 0.02f);
+    CombinedShaders.setUniform("PctExtend", 0.07f);
     CombinedShaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
    
     Shaders.use();
@@ -277,7 +277,7 @@ void SceneBasic_Uniform::render()
     CombinedShaders.use();
     CombinedShaders.setUniform("Light.Position", view * lightPos);
 
-    Shaders.use();
+  //  Shaders.use();
     drawScene();
 
 }
@@ -306,7 +306,7 @@ void SceneBasic_Uniform::drawScene() {
     //
 }
 void SceneBasic_Uniform::drawFloor() {
-   
+    Shaders.use();
     Shaders.setUniform("Material.Rough", 0.9f);
     Shaders.setUniform("Material.Metal", 0);
     Shaders.setUniform("Material.Color", glm::vec3(0.2f));
@@ -316,6 +316,7 @@ void SceneBasic_Uniform::drawFloor() {
 
     setMatrices();
     plane.render();
+    CombinedShaders.use();
 }
 void SceneBasic_Uniform::DrawRock(const vec3& pos)
 {
@@ -340,9 +341,9 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
     
-    Shaders.setUniform("Material.Rough", rough);
-    Shaders.setUniform("Material.Metal", metal);
-    Shaders.setUniform("Material.Color", color);
+    //Shaders.setUniform("Material.Rough", rough);
+   // Shaders.setUniform("Material.Metal", metal);
+   // Shaders.setUniform("Material.Color", color);
     model = mat4(1.0f);
     
     model = glm::translate(model, pos);
@@ -352,7 +353,9 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     
-    setMatrices();
+ //   setMatrices();
+    CombinedShaders.use();
+    SetMatricesDynamic(CombinedShaders);
     SwordMesh->render();
 }
 void SceneBasic_Uniform::resize(int w, int h)
