@@ -22,13 +22,40 @@ SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     SwordMesh = ObjMesh::load("media/spot/spot_triangulated.obj");
     SwordMesh = ObjMesh::load("media/Sword.obj");
-    RockMesh = ObjMesh::load("media/Rock07-Base.obj");
+    RockMesh = ObjMesh::loadWithAdjacency("media/Rock07-Base.obj");
     //mesh = ObjMesh::load("media/swordInStone.obj");
 
 }
 void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
 }
+struct Edge {
+    unsigned int v0, v1;
+
+    Edge(unsigned int a, unsigned int b) {
+        v0 = std::min(a, b);
+        v1 = std::max(a, b);
+    }
+
+    bool operator<(const Edge& other) const {
+        return std::tie(v0, v1) < std::tie(other.v0, other.v1);
+    }
+};
+std::map<Edge, std::vector<unsigned int>> edgeMap;
+
+void SceneBasic_Uniform::BuildAdjacencies() {
+
+ //   for (unsigned int i = 0; i < .size(); i += 3) {
+   //     unsigned int v0 = indices[i];
+     //   unsigned int v1 = indices[i + 1];
+     //   unsigned int v2 = indices[i + 2];
+
+     //   edgeMap[Edge(v0, v1)].push_back(i);
+     //   edgeMap[Edge(v1, v2)].push_back(i);
+      //  edgeMap[Edge(v2, v0)].push_back(i);
+    //}
+}
+
 void SceneBasic_Uniform::Mouse_CallBack(double Xpos, double Ypos) {
     // std::cout << "Moving mouse" << "\n";
      //Initially no last positions, so sets last positions to current positions
@@ -146,21 +173,32 @@ void SceneBasic_Uniform::initScene()
     Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
 
     //silhouette lines set up 
-    Shaders.setUniform("EdgeWidth", 0.015f);
-    Shaders.setUniform("PctExtend", 0.25f);
-    Shaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
-    Shaders.setUniform("TexMaterial.Kd", 0.7f, 0.5f, 0.2f);
-    Shaders.setUniform("TexLight.Position", vec4(0.0f, 0.0f, 0.0f, 1.0f));
-    Shaders.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
-    Shaders.setUniform("TexLight.Intensity", 1.0f, 1.0f, 1.0f);
+    CombinedShaders.use();
+    CombinedShaders.setUniform("Light.Position", view*lightPos);
+    CombinedShaders.setUniform("Light.Intensity", 1.0f, 1.0f, 1.0f);
+
+    CombinedShaders.setUniform("Material.Kd", 0.7f, 0.5f, 0.2f);
+    CombinedShaders.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+
+    CombinedShaders.setUniform("EdgeWidth", 0.015f);
+    CombinedShaders.setUniform("PctExtend", 0.25f);
+    CombinedShaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
+   
+    Shaders.use();
+    
 }
 
 void SceneBasic_Uniform::compile()
 {
     try {
-        Shaders.compileShader("shader/NewVertexShader.vert");
-        Shaders.compileShader("shader/NewFragmentShader.frag");
-        Shaders.compileShader("shader/Geometry_Shader.gs");
+        CombinedShaders.compileShader("shader/SilhouetteLines.vert");
+        CombinedShaders.compileShader("shader/SilhouetteLines.frag");
+        CombinedShaders.compileShader("shader/Geometry_Shader.gs");
+        CombinedShaders.link();
+        
+
+        Shaders.compileShader("shader/MainVertexShader.vert");
+        Shaders.compileShader("shader/MainFragmentShader.frag");
         Shaders.link();
         Shaders.use();
 
@@ -204,6 +242,12 @@ void SceneBasic_Uniform::setMatrices() {
     Shaders.setUniform("NormalMatrix", glm::mat3(mv));
     Shaders.setUniform("MVP", projection * mv);
 }
+void SceneBasic_Uniform::SetMatricesDynamic(GLSLProgram &Shader) {
+    mat4 mv = view * model;
+    Shader.setUniform("ModelViewMatrix", mv);
+    Shader.setUniform("NormalMatrix", glm::mat3(mv));
+    Shader.setUniform("MVP", projection * mv);
+}
 void SceneBasic_Uniform::DrawSkyBox() {
     //draw sky
     mat4 model = mat4(1.0f);
@@ -228,6 +272,12 @@ void SceneBasic_Uniform::render()
 
     Shaders.use();
 	Shaders.setUniform("Light[0].Position", view * lightPos);
+
+
+    CombinedShaders.use();
+    CombinedShaders.setUniform("Light.Position", view * lightPos);
+
+    Shaders.use();
     drawScene();
 
 }
@@ -251,9 +301,9 @@ void SceneBasic_Uniform::drawScene() {
     //silver
     drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
 
-    DrawRock(vec3(3.0f, -0.5f, 3.0f));
+   // DrawRock(vec3(3.0f, -0.5f, 3.0f));
    
-    
+    //
 }
 void SceneBasic_Uniform::drawFloor() {
    
@@ -269,7 +319,8 @@ void SceneBasic_Uniform::drawFloor() {
 }
 void SceneBasic_Uniform::DrawRock(const vec3& pos)
 {
-    Shaders.setUniform("RenderType", 1);
+  //  Shaders.setUniform("RenderType", 1);
+    CombinedShaders.use();
 
     model = mat4(1.0f);
 
@@ -279,9 +330,12 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
         0.01f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    setMatrices();
+   // setMatrices();
+    SetMatricesDynamic(CombinedShaders);
     RockMesh->render();
+    Shaders.use();
     Shaders.setUniform("RenderType", 0);
+    
 }
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {

@@ -4,8 +4,8 @@
 
 layout(location = 0) out vec4 FragColor;
 
-//in vec3 Position;
-//in vec3 Normal; 
+in vec3 Position;
+in vec3 Normal; 
 
 //0 is PBR for metals
 // 1 is texture
@@ -27,42 +27,6 @@ uniform struct MaterialInfo{
 	bool Metal; // Metallic(true) or dielectric(false)
 	vec3 Color; // diffuse color for dielectrics, f0 for metals
 }Material;
-
-//silhouette line parameters
-
-in vec3 Gposition;
-in vec3 GNormal;
-
-
-uniform vec4 LineColor;
-flat in int GIsEdge;
-
-//toon shading levels
-const int levels =3;
-const float scaleFactor=1.0/levels;
-
-//silhouette lines structs
-struct TexMaterialInfo{
-    vec3 Ka; //ambient reflectivity 
-    vec3 Kd;  //diffuse reflectivity
-    vec3 Ks; // specular reflectivity
-    float shininess;  //specular shininess factor
-};
-uniform TexMaterialInfo TexMaterial;
-
-struct TexLightInfo{
-    vec4 Position;
-    vec3 Intensity;
-    vec3 La;
-    vec3 L;
-};
-uniform TexLightInfo TexLight;
-
-
-
-
-
-
 
 //PBR functions
 
@@ -112,46 +76,20 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 
 }
 
-// Sillhouette line functions
 
-vec3 toonShade(){
-    vec3 s=normalize(TexLight.Position.xyz-Gposition.xyz);
-    vec3 ambient=TexMaterial.Ka;
-    float cosine=dot(s,GNormal);
-    vec3 diffuse=TexMaterial.Kd*ceil(cosine*levels)*scaleFactor;
-
-    return TexLight.Intensity*(ambient+diffuse);
-}
 
 void main(){
 	if(RenderType==1){
 		//texture rendering
-		//FragColor=vec4(0.0);
-		if(GIsEdge==1){
-			FragColor=LineColor;
-		}else{
-			FragColor=vec4(toonShade(),1.0);
-		}
 
-	}
-	else if(RenderType==2){
-		// PBR 
-		vec3 sum=vec3(0.0);
-		vec3 n=normalize(GNormal);
-		for(int i=0;i<3;i++){
-			sum+=microfacetModel(i,Gposition,n);
-		}
 
-		//gamma 
-		sum=pow(sum,vec3(1.0/2.2));
-		FragColor=vec4(sum,1);
 	}
 	else{
 		// PBR 
 		vec3 sum=vec3(0.0);
-		vec3 n=normalize(GNormal);
+		vec3 n=normalize(Normal);
 		for(int i=0;i<3;i++){
-			sum+=microfacetModel(i,Gposition,n);
+			sum+=microfacetModel(i,Position,n);
 		}
 
 		//gamma 

@@ -1,8 +1,8 @@
 #version 460
 
 //input primatives
-layout(triangles_adjacency ) in;
-//layout(triangles ) in;
+//layout(triangles_adjacency ) in;
+layout(triangles ) in;
 layout( triangle_strip, max_vertices = 15)out;
 
 //output primatives

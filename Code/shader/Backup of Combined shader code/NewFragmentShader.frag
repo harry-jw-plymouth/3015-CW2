@@ -134,18 +134,6 @@ void main(){
 		}
 
 	}
-	else if(RenderType==2){
-		// PBR 
-		vec3 sum=vec3(0.0);
-		vec3 n=normalize(GNormal);
-		for(int i=0;i<3;i++){
-			sum+=microfacetModel(i,Gposition,n);
-		}
-
-		//gamma 
-		sum=pow(sum,vec3(1.0/2.2));
-		FragColor=vec4(sum,1);
-	}
 	else{
 		// PBR 
 		vec3 sum=vec3(0.0);

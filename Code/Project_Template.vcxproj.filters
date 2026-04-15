@@ -95,6 +95,18 @@
     <None Include="shader\Geometry_Shader.gs">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shader\MainFragmentShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\MainVertexShader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\SilhouetteLines.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\SilhouetteLines.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper\scene.h">

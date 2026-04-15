@@ -32,6 +32,7 @@ class SceneBasic_Uniform : public Scene
 {
 private:
     GLSLProgram Shaders;
+    GLSLProgram CombinedShaders;
     GLSLProgram SkyBoxShaders;
 
     SkyBox SkyBox;
@@ -67,6 +68,8 @@ private:
     void compile();
 public:
     void SetupSkybox();
+    void BuildAdjacencies();
+    void SetMatricesDynamic(GLSLProgram &Shader);
 
     void LoadTextures();
     void DrawSkyBox();

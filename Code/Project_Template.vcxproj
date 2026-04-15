@@ -167,8 +167,12 @@
     <None Include="shader\basic_uniform.frag" />
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\Geometry_Shader.gs" />
+    <None Include="shader\MainFragmentShader.frag" />
+    <None Include="shader\MainVertexShader.vert" />
     <None Include="shader\NewFragmentShader.frag" />
     <None Include="shader\NewVertexShader.vert" />
+    <None Include="shader\SilhouetteLines.frag" />
+    <None Include="shader\SilhouetteLines.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper\aabb.h" />
