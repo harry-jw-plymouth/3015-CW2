@@ -1,5 +1,5 @@
 -Which version Visual Studio and Operating System you used to test/write the code
-locally? Done
+locally? Done <br />
 o How does it work?
 o What makes your shader program special and how does it compare to similar things?
 (Where did you get the idea from? What did you start with? How did you make yours
