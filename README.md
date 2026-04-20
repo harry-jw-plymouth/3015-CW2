@@ -11,3 +11,10 @@ o Are there any software engineering issues, such as the trade-off between perfo
 and good practice?<br />
 o A (brief) evaluation of what you think you have achieved, and what (if anything) you
 would do differently, knowing what you now know. Don’t be modest but be realistic! <br />
+
+# 3015 CW2 Shader tool 
+# By Harry Watton
+
+#How to use the software 
+## Running the code 
+To run the code please navigate to the following dierctory: Code-> Debug and then open "Project_template.exe". This Will run the code. <br /> While using the code, WASD can be used to move the camera position to look around the scene and the mouse can be used to change the direction the camera is looking
