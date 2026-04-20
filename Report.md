@@ -28,9 +28,11 @@ The next step in the shader pipeline was the geometery shader <br />
 Using the MVP matrix seen in vertex shader, whole triangles potentially see transofrmations. In most cases the vertices do not see transformations, but in some cases a triangle may be determined to be an edge, in which case extra geometery is generated to act as the edge which is also flagged to determine it is an edge. This is then passed too the fragment shader. <br /> 
 The process of this is included to allow for silhouette lines to be included, for more details please see the relevant section below
 ### Fragment shader 
+The final step is the fragment shader, where all the data set up previously can finnally be turned into the output colour of the shader <br />
+The first step fragment shader takes is to check if the geometery it is providing colour for is an edge. If it is then the shader will simply return the colour black. <br /> 
+Otherwise, the geometery will have PBR applied and then get overlayed by a toon shading method to create the final colour which is then returned and displayed on the object.  <br />
+For more details on the toon shading, silhouette lines and PBR please see the section below detailing the individual techniques 
 
-
-The shader pipeline
 ## Individual techniques 
 This section details the individual technique that come together to make up the shaders
 ## Physics based rendering (PBR)
