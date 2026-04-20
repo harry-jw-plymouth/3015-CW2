@@ -67,6 +67,7 @@ Rock: https://www.turbosquid.com/3d-models/rock07base3ds-3d-1899446 <br />
 Tree: https://www.turbosquid.com/3d-models/gentree-103-generic-tree-103-3d-model-2062798 <br />
 Skybox and ground: https://opengameart.org/content/forest-skyboxes
 
+ # Use of AI statement
 
 
 # Github reopsitory link
