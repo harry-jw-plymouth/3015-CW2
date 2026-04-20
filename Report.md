@@ -53,9 +53,17 @@ My shader program is special in the way it combines PBR and cell shading/silhoue
 #Anything else which will help us to understand how your prototype works 
 
 ## Asset usage 
+A variety of assets were used in the development of this project. These are detailed below as well as their source.<br />
+Sword model: https://free3d.com/3d-model/medieval-sword-69788.html <br />
+Rock: https://www.turbosquid.com/3d-models/rock07base3ds-3d-1899446 <br />
+Tree: https://www.turbosquid.com/3d-models/gentree-103-generic-tree-103-3d-model-2062798 <br />
+Skybox and ground: https://opengameart.org/content/forest-skyboxes
+
+
 
 # Github reopsitory link
-https://github.com/harry-jw-plymouth/3015-CW2.git
+https://github.com/harry-jw-plymouth/3015-CW2.git <br />
+
 
 # A link to the unlisted YouTube Video
 
