@@ -19,9 +19,18 @@ Visual studio version: Visual studio 2022<br />
 # How does it work?
 A simple description of how my shader program works is that it uses a geometery shader to allow for silhouette lines before the fragment shader applies phyics based rendering(PBR) and  applying toon shading to add the cartoon style look that cones with silhouette lines. Below is details on the overall pipeline as well as details on the individual features that come together to build said pipeline 
 ## Pipeline 
-This section details the shader pipeline 
+This section details the shader pipeline and the process it follows to provide shading 
+### Vertex shader 
+The vertex shader is the first step of the shader pipeline and it lays the essential ground work for the rest of the shaders.<br /> The key functionality done here is that it converts the vertex positions of the object mesh into a format usable by the GPU, without it the rendering would not be able to occur. The transformation is completed using the model view projection by using the model view position data and then using projection to make the object appear smaller/bigger depending on how close or distant from the camera the object is, <br />
+The following stages rely on the vertex shader as, the position and Normal data transformed and set up here are used in the geometery shader for detecting whether something is an edge for silhouette lines and used in fragment shader for lighting calulcuations.
+### geometery shader 
+
+### Fragment shader 
+
+
+The shader pipeline
 ## Individual techniques 
-This section details the individual technique that come together to make the shaders 
+This section details the individual technique that come together to make up the shaders
 ## Physics based rendering (PBR)
 ## Silhouette lines and toon shading
 
