@@ -44,8 +44,12 @@ The microfacet model was applied multiple times,once for every light. The value 
 
 Please note, the code from lab 10 was used as a base and adapted for this project 
 ## Silhouette lines and toon shading
+Another key technique used was silhouette lines with toon shading. This was used to give a cartoon look which makes the shading a lot more stylised and unique, and it created an interesting contrast by being combined with the more realistic element of the physic based rendering. <br /> 
+<br />
+The inclusion of this tenchnique prompted the inclusion of the geometery shader. 
 
 
+Please note,the code for this tenchnique was an adapted version of the code seen in lab 6 part 3, the geometery shader is essentially 1:1 with said code 
 
 # What makes your shader program special and how does it compare to similar things? 
 My shader program is special in the way it combines PBR and cell shading/silhouette lines 
