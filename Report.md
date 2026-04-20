@@ -50,7 +50,7 @@ Please note, the code from lab 10 was used as a base and adapted for this projec
 # What makes your shader program special and how does it compare to similar things? 
 My shader program is special in the way it combines PBR and cell shading/silhouette lines 
 
-#Anything else which will help us to understand how your prototype works 
+# Anything else which will help us to understand how your prototype works 
 
 ## Asset usage 
 A variety of assets were used in the development of this project. These are detailed below as well as their source.<br />
