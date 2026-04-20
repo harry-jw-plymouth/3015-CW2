@@ -29,19 +29,7 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
 void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
 }
-struct Edge {
-    unsigned int v0, v1;
 
-    Edge(unsigned int a, unsigned int b) {
-        v0 = std::min(a, b);
-        v1 = std::max(a, b);
-    }
-
-    bool operator<(const Edge& other) const {
-        return std::tie(v0, v1) < std::tie(other.v0, other.v1);
-    }
-};
-std::map<Edge, std::vector<unsigned int>> edgeMap;
 
 void SceneBasic_Uniform::BuildAdjacencies() {
 

@@ -50,9 +50,9 @@ vec3 shlickFresnel(float lDotH){
 }
 
 vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
-	vec3 diffuseBrdf=vec3(0.0); //metallic
+	vec3 diffuseMaterial=vec3(0.0); //metallic
 	if(!Material.Metal){
-		diffuseBrdf=Material.Color;
+		diffuseMaterial=Material.Color;
 	}
 
 	vec3 l=vec3(0.0),lightI=Light[lightIdx].L;
@@ -72,7 +72,7 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	float nDotV=dot(n,v);
 	vec3 specBrdf=0.25*ggxDistribution(nDotH)*shlickFresnel(lDotH)*geomSmith(nDotL)*geomSmith(nDotV);
 
-	return (diffuseBrdf+PI*specBrdf)*lightI*nDotL;
+	return (diffuseMaterial+PI*specBrdf)*lightI*nDotL;
 
 }
 
