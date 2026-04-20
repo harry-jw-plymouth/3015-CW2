@@ -48,6 +48,8 @@ Another key technique used was silhouette lines with toon shading. This was used
 <br />
 The inclusion of this tenchnique prompted the inclusion of the geometery shader aswell as the need for each mesh to be loaded with adjacency to allow for the desired geometery shading(done using the built in function in objmesh.cpp). In the geomtery shader, a set of vertices (e.g a triangle) is looked at. When looking at it, it will determine if the vertices are an edge of a mesh and if it is then the it is marked as an edge and extre geometery is added to be used as the silhouette line later. These faces are then passed to the fragment shader. Before being passed, a flag is set to determine if the vertices are an edge  <br />
 In the fragment shader the edge flag is checked. If it is indeed an edge, the fragment shader will return flat black as the colour. meaning edges are shaded with a clear differentation from the more regular shaded sections <br /> <br />
+If it is not and edge, then the PBR code is run through (details of this can be seen in the section above), but once that is complete, a toon based shader adapted to work with PBR is run. This runs through similair steps as the PBR code but has a toon overlay, where instead of a smooth  light transition, shadows/light levels change more suddenly, this leads to more simple shading like what is seen in cartoons.<br />
+This is then mixed with the PBR calculation seen earlier to create the mixed look the shader aims for . In addition, the mixing can be controlled with one shading technique given bias to have more of a focus compared to the other if it makes sense, this is controlled by the value in the line where the 2 are mixed with 0.5 being balanced and increasing or decreasing the value (it must stay between 0 and 1) increasing the prevalance of one of the tecnhiques. <br /><br />
 The edge lines can be controlled and adjusted with 2 variables. PctExtend increases the length of the silhouette, allowing for control of how silhouettes overlap. Edgewidth determines how wide the edges actually are, allowing for contol over how thick/thin the lines should be and also giving the option between more bold lines or more subtle lines depending on the situation.<br />
 
 
@@ -65,6 +67,7 @@ Rock: https://www.turbosquid.com/3d-models/rock07base3ds-3d-1899446 <br />
 Tree: https://www.turbosquid.com/3d-models/gentree-103-generic-tree-103-3d-model-2062798 <br />
 Skybox and ground: https://opengameart.org/content/forest-skyboxes
 
+ # Use of AI statement
 
 
 # Github reopsitory link
