@@ -36,6 +36,13 @@ For more details on the toon shading, silhouette lines and PBR please see the se
 ## Individual techniques 
 This section details the individual technique that come together to make up the shaders
 ## Physics based rendering (PBR)
+PBR was used as the base of the project,and was one of the main shading features.
+It was chosen over other lighting models (e.g Blinn Phong) due to the extra detail and accuarcy it allows <br /> 
+In my code, PBR exists as part of the fragment shader, where normals and position data is already set up by the vertex shader. The first step the PBR code takes is normalising the Normal value followed by applying the microfacet model. <br /> 
+<br /> 
+The microfacet model was applied multiple times,once for every light. The value of each application was totalled up and then used for gamma correction. This was the final step needed before it could be mixed with toon shading and then returned as the frag colour <br /> 
+
+Please note, the code from lab 10 was used as a base and adapted for this project 
 ## Silhouette lines and toon shading
 
 
