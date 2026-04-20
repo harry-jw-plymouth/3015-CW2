@@ -46,10 +46,12 @@ Please note, the code from lab 10 was used as a base and adapted for this projec
 ## Silhouette lines and toon shading
 Another key technique used was silhouette lines with toon shading. This was used to give a cartoon look which makes the shading a lot more stylised and unique, and it created an interesting contrast by being combined with the more realistic element of the physic based rendering. <br /> 
 <br />
-The inclusion of this tenchnique prompted the inclusion of the geometery shader. 
+The inclusion of this tenchnique prompted the inclusion of the geometery shader aswell as the need for each mesh to be loaded with adjacency to allow for the desired geometery shading(done using the built in function in objmesh.cpp). In the geomtery shader, a set of vertices (e.g a triangle) is looked at. When looking at it, it will determine if the vertices are an edge of a mesh and if it is then the it is marked as an edge and extre geometery is added to be used as the silhouette line later. These faces are then passed to the fragment shader. Before being passed, a flag is set to determine if the vertices are an edge  <br />
+In the fragment shader the edge flag is checked. If it is indeed an edge, the fragment shader will return flat black as the colour. meaning edges are shaded with a clear differentation from the more regular shaded sections <br /> <br />
+The edge lines can be controlled and adjusted with 2 variables. PctExtend increases the length of the silhouette, allowing for control of how silhouettes overlap. Edgewidth determines how wide the edges actually are, allowing for contol over how thick/thin the lines should be and also giving the option between more bold lines or more subtle lines depending on the situation.<br />
 
 
-Please note,the code for this tenchnique was an adapted version of the code seen in lab 6 part 3, the geometery shader is essentially 1:1 with said code 
+Please note,the code for this tenchnique was an adapted version of the code seen in lab 6 part 3, the geometery shader is essentially 1:1 with said code. 
 
 # What makes your shader program special and how does it compare to similar things? 
 My shader program is special in the way it combines PBR and cell shading/silhouette lines 
