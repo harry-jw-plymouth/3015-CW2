@@ -24,7 +24,9 @@ This section details the shader pipeline and the process it follows to provide s
 The vertex shader is the first step of the shader pipeline and it lays the essential ground work for the rest of the shaders.<br /> The key functionality done here is that it converts the vertex positions of the object mesh into a format usable by the GPU, without it the rendering would not be able to occur. The transformation is completed using the model view projection by using the model view position data and then using projection to make the object appear smaller/bigger depending on how close or distant from the camera the object is, <br />
 The following stages rely on the vertex shader as, the position and Normal data transformed and set up here are used in the geometery shader for detecting whether something is an edge for silhouette lines and used in fragment shader for lighting calulcuations.
 ### geometery shader 
-
+The next step in the shader pipeline was the geometery shader <br />
+Using the MVP matrix seen in vertex shader, whole triangles potentially see transofrmations. In most cases the vertices do not see transformations, but in some cases a triangle may be determined to be an edge, in which case extra geometery is generated to act as the edge which is also flagged to determine it is an edge. This is then passed too the fragment shader. <br /> 
+The process of this is included to allow for silhouette lines to be included, for more details please see the relevant section below
 ### Fragment shader 
 
 
