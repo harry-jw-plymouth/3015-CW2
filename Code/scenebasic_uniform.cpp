@@ -23,6 +23,8 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
     SwordMesh = ObjMesh::load("media/spot/spot_triangulated.obj");
     SwordMesh = ObjMesh::loadWithAdjacency("media/Sword.obj");
     RockMesh = ObjMesh::loadWithAdjacency("media/Rock07-Base.obj");
+	TreeMesh = ObjMesh::loadWithAdjacency("media/Tree.obj");
+	ButterflyMesh = ObjMesh::loadWithAdjacency("media/Butterfly/_butterfly.obj");
     //mesh = ObjMesh::load("media/swordInStone.obj");
 
 }
@@ -360,6 +362,28 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
     
     SetMatricesDynamic(CombinedShaders);
     SwordMesh->render();
+}
+void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
+    model = mat4(1.0f);
+    model = glm::translate(model, pos);
+    model = glm::scale(model, vec3(0.01f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+    SetMatricesDynamic(CombinedShaders);
+    ButterflyMesh->render();
+}
+void SceneBasic_Uniform::DrawTree(const vec3& pos) {
+    model = mat4(1.0f);
+    model = glm::translate(model, pos);
+    model = glm::scale(model, vec3(0.01f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+    SetMatricesDynamic(CombinedShaders);
+    TreeMesh->render();
+}
+void SceneBasic_Uniform::DrawAllButterflies() {
+    
+}
+void SceneBasic_Uniform::DrawAllTrees() {
+    
 }
 void SceneBasic_Uniform::resize(int w, int h)
 {

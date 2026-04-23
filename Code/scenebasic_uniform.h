@@ -40,6 +40,8 @@ private:
     Teapot teapot;
     std::unique_ptr<ObjMesh> SwordMesh;
     std::unique_ptr<ObjMesh> RockMesh;
+    std::unique_ptr<ObjMesh> ButterflyMesh;
+    std::unique_ptr<ObjMesh> TreeMesh;
     Plane plane;
 
     //textures 
@@ -75,6 +77,10 @@ public:
     void DrawSkyBox();
     void drawSword(const glm::vec3& pos, float rough, int metal, const glm::vec3& color);
     void DrawRock(const glm::vec3& pos);
+    void DrawAllButterflies();
+    void DrawAllTrees();
+    void DrawTree(const glm::vec3& pos);
+    void DrawButterfly(const glm::vec3& pos);
     void drawFloor();
     void drawScene();
 
