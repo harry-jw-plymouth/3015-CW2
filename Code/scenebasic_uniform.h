@@ -79,7 +79,8 @@ public:
     void DrawRock(const glm::vec3& pos);
     void DrawAllButterflies();
     void DrawAllTrees();
-    void DrawTree(const glm::vec3& pos);
+    void DrawAllSwords();
+    void DrawTree(const glm::vec3& pos, const vec3& Scale);
     void DrawButterfly(const glm::vec3& pos);
     void drawFloor();
     void drawScene();

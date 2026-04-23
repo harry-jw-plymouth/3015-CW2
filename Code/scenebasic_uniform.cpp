@@ -286,6 +286,15 @@ void SceneBasic_Uniform::render()
 }
 void SceneBasic_Uniform::drawScene() {
     drawFloor();
+    DrawAllSwords();
+    DrawRock(vec3(-0.0f, -0.5f, 3.0f));
+    DrawAllTrees();
+	DrawAllButterflies();
+   // DrawRock(vec3(3.0f, -0.5f, 3.0f));
+   
+    //
+}
+void SceneBasic_Uniform::DrawAllSwords() {
 
     // draw dielectric cows with varying roughness
     int numCows = 9;
@@ -298,15 +307,11 @@ void SceneBasic_Uniform::drawScene() {
     drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
     //aluminium
     drawSword(glm::vec3(-0.f, 0.f, 3.f), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
-    DrawRock(vec3(-0.0f, -0.5f, 3.0f));
     //titanium
     drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
     //silver
     drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
 
-   // DrawRock(vec3(3.0f, -0.5f, 3.0f));
-   
-    //
 }
 void SceneBasic_Uniform::drawFloor() {
     Shaders.use();
@@ -371,19 +376,24 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     SetMatricesDynamic(CombinedShaders);
     ButterflyMesh->render();
 }
-void SceneBasic_Uniform::DrawTree(const vec3& pos) {
+void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
     model = mat4(1.0f);
     model = glm::translate(model, pos);
-    model = glm::scale(model, vec3(0.01f));
-    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, Scale);
+    //model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
     SetMatricesDynamic(CombinedShaders);
     TreeMesh->render();
 }
 void SceneBasic_Uniform::DrawAllButterflies() {
-    
+	
 }
 void SceneBasic_Uniform::DrawAllTrees() {
-    
+    DrawTree(vec3(-2.0f, -1.0f, 2.0f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(2.5f, -1.0f, 2.4f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(-4.0f, -1.0f, 3.0f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(2.9f, -1.0f, -3.4f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(5.0f, -1.0f, 1.0f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(-5.0f, -1.0f, -2.0f), vec3(1.0f, 1.5f, 1.0f));
 }
 void SceneBasic_Uniform::resize(int w, int h)
 {
