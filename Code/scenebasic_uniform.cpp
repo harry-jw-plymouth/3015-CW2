@@ -20,8 +20,10 @@ using std::endl;
 
 SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.0f)),
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
-    SwordMesh = ObjMesh::load("media/spot/spot_triangulated.obj");
-    SwordMesh = ObjMesh::loadWithAdjacency("media/Sword.obj");
+    TestMesh = ObjMesh::loadWithAdjacency("media/spot/spot_triangulated.obj");
+
+
+    SwordMesh = ObjMesh::loadWithAdjacency("media/Sword.obj"); // needs replacing
     RockMesh = ObjMesh::loadWithAdjacency("media/Rock07-Base.obj");
 	TreeMesh = ObjMesh::loadWithAdjacency("media/Tree.obj");
 	ButterflyMesh = ObjMesh::loadWithAdjacency("media/Butterfly/_butterfly.obj");
@@ -33,18 +35,7 @@ void SceneBasic_Uniform::LoadTextures() {
 }
 
 
-void SceneBasic_Uniform::BuildAdjacencies() {
 
- //   for (unsigned int i = 0; i < .size(); i += 3) {
-   //     unsigned int v0 = indices[i];
-     //   unsigned int v1 = indices[i + 1];
-     //   unsigned int v2 = indices[i + 2];
-
-     //   edgeMap[Edge(v0, v1)].push_back(i);
-     //   edgeMap[Edge(v1, v2)].push_back(i);
-      //  edgeMap[Edge(v2, v0)].push_back(i);
-    //}
-}
 
 void SceneBasic_Uniform::Mouse_CallBack(double Xpos, double Ypos) {
     // std::cout << "Moving mouse" << "\n";
@@ -272,9 +263,11 @@ void SceneBasic_Uniform::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     DrawSkyBox();
 
-    Shaders.use();
-	Shaders.setUniform("Light[0].Position", view * lightPos);
+  //  Shaders.use();
+	//Shaders.setUniform("Light[0].Position", view * lightPos);
 
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.0f, 1.0f);
 
     CombinedShaders.use();
     CombinedShaders.setUniform("Light.Position", view * lightPos);
@@ -282,14 +275,17 @@ void SceneBasic_Uniform::render()
 
   //  Shaders.use();
     drawScene();
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
 
 }
 void SceneBasic_Uniform::drawScene() {
-    drawFloor();
-    DrawAllSwords();
+    //drawFloor();
+
+   DrawAllSwords();
     DrawRock(vec3(-0.0f, -0.5f, 3.0f));
-    DrawAllTrees();
-	DrawAllButterflies();
+   DrawAllTrees();
+   DrawAllButterflies();
    // DrawRock(vec3(3.0f, -0.5f, 3.0f));
    
     //
@@ -302,35 +298,42 @@ void SceneBasic_Uniform::DrawAllSwords() {
     //draw metal cows
     float metalRough = 0.43f;
     // gold
-    drawSword(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
+  //  drawSword(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
     // copper
-    drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+  //  drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
     //aluminium
     drawSword(glm::vec3(-0.f, 0.f, 3.f), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
     //titanium
-    drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
+  //  drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
     //silver
-    drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+   // drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
 
 }
 void SceneBasic_Uniform::drawFloor() {
-    Shaders.use();
-    Shaders.setUniform("Material.Rough", 0.9f);
-    Shaders.setUniform("Material.Metal", 0);
-    Shaders.setUniform("Material.Color", glm::vec3(0.2f));
+    CombinedShaders.use();
+    CombinedShaders.setUniform("RenderMode", 0);
+    CombinedShaders.setUniform("EdgeOn", 0);
+    CombinedShaders.setUniform("PBRMaterial.Rough", 0.9f);
+    CombinedShaders.setUniform("PBRMaterial.Metal", 0);
+    CombinedShaders.setUniform("PBRMaterial.Color", glm::vec3(0.2f));
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
 
-    setMatrices();
+    //setMatrices();
+	SetMatricesDynamic(CombinedShaders);
     plane.render();
     CombinedShaders.use();
+    CombinedShaders.setUniform("RenderMode", 1);
 }
 void SceneBasic_Uniform::DrawRock(const vec3& pos)
 {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, RockTexture);
   //  Shaders.setUniform("RenderType", 1);
     CombinedShaders.use();
-
+    CombinedShaders.setUniform("EdgeOn", 0);
+    CombinedShaders.setUniform("RenderMode", 0);
     model = mat4(1.0f);
 
     model = glm::translate(model, pos);
@@ -342,8 +345,9 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
    // setMatrices();
     SetMatricesDynamic(CombinedShaders);
     RockMesh->render();
-    Shaders.use();
-    Shaders.setUniform("RenderType", 0); 
+//	TestMesh->render();
+   // Shaders.use();
+   // Shaders.setUniform("RenderType", 0); 
 }
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
@@ -351,6 +355,8 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
    // Shaders.setUniform("Material.Metal", metal);
    // Shaders.setUniform("Material.Color", color);
     CombinedShaders.use();
+    CombinedShaders.setUniform("RenderMode", 1);
+    CombinedShaders.setUniform("EdgeOn", 1);
     CombinedShaders.setUniform("PBRMaterial.Rough", rough);
     CombinedShaders.setUniform("PBRMaterial.Metal", metal);
     CombinedShaders.setUniform("PBRMaterial.Color", color);
@@ -365,11 +371,15 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
     
  //   setMatrices();
     
+    CombinedShaders.setUniform("RenderMode", 1);
     SetMatricesDynamic(CombinedShaders);
     SwordMesh->render();
+    //TestMesh->render();
 }
 void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     model = mat4(1.0f);
+    CombinedShaders.setUniform("RenderMode", 1);
+    CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
     model = glm::scale(model, vec3(0.01f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
@@ -378,11 +388,14 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
 }
 void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
     model = mat4(1.0f);
+    CombinedShaders.setUniform("RenderMode", 1);
+    CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
     model = glm::scale(model, Scale);
     //model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
     SetMatricesDynamic(CombinedShaders);
     TreeMesh->render();
+ //   TestMesh->render();
 }
 void SceneBasic_Uniform::DrawAllButterflies() {
 	

@@ -8,6 +8,7 @@ layout( triangle_strip, max_vertices = 15)out;
 //output primatives
 out vec3 GNormal; //normal used by fragment shader 
 out vec3 Gposition; //positon used for fragment shader 
+out vec2 GTexCoord;
 
 //which triangle edges are silhouette edges
 //0 not edge, 1 is an edge
@@ -15,6 +16,7 @@ flat out int GIsEdge;
 
 in vec3 VNormal[];
 in vec3 Vposition[];
+in vec2 VTexCoords[];
 
 uniform float EdgeWidth;
 uniform float PctExtend;
@@ -30,13 +32,21 @@ void emitEdgeQuad(vec3 e0,vec3 e1){
     GIsEdge=1; //part of the sil. edge
 
     gl_Position=vec4(e0.xy-ext,e0.z,1.0);
+    GTexCoord = vec2(0.0);
     EmitVertex();
+
     gl_Position=vec4(e0.xy-n,e0.z,1.0);
+    GTexCoord = vec2(0.0);
     EmitVertex();
+
     gl_Position=vec4(e1.xy+ext,e1.z,1.0);
+    GTexCoord = vec2(0.0);
     EmitVertex();
+
     gl_Position=vec4(e1.xy-n+ext,e1.z,1.0);
+    GTexCoord = vec2(0.0);
     EmitVertex();
+
 
     EndPrimitive();
 
@@ -72,16 +82,19 @@ void main(){
 
     GNormal=VNormal[0];
     Gposition=Vposition[0];
+    GTexCoord=VTexCoords[0];
     gl_Position=gl_in[0].gl_Position;
     EmitVertex();
 
     GNormal=VNormal[2];
     Gposition=Vposition[2];
+    GTexCoord=VTexCoords[2];
     gl_Position=gl_in[2].gl_Position;
     EmitVertex();
     
     GNormal=VNormal[4];
     Gposition=Vposition[4];
+    GTexCoord=VTexCoords[4];
     gl_Position=gl_in[4].gl_Position;
     EmitVertex();
 

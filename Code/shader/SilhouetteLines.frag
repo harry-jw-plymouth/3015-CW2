@@ -1,5 +1,8 @@
 #version 460
 
+layout (binding=0) uniform sampler2D MainTexture;
+in vec2 GTexCoord;
+
 // PBR parameters
 const float PI=3.1415926535358979323846;
 
@@ -42,6 +45,8 @@ in vec3 Gposition;
 in vec3 GNormal;
 
 flat in int GIsEdge;
+uniform int RenderMode;
+uniform int EdgeOn;
 layout(location=0) out vec4 FragColor;
 
 //toon shading levels
@@ -135,45 +140,48 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 
 
 void main(){
-	// silhouette lines
-    //if(GIsEdge==1){
-      //  FragColor=LineColor;
-   /// }else{
-   //     FragColor=vec4(toonShade(),1.0);
- //   }
+	if(RenderMode==0){
+		if(GIsEdge==1){
+			if(EdgeOn==1){
+				FragColor=LineColor;
 
-	// PBR 
-	//vec3 sum=vec3(0.0);
-	//vec3 n=normalize(GNormal);
-	//for(int i=0;i<3;i++){
-//		sum+=microfacetModel(i,Gposition,n);
-//	}
+			}else{
+				discard;
+			}
+			return;
+		}
+		vec3 texColor=texture(MainTexture,GTexCoord).rgb;
+		FragColor=vec4(texColor,1.0);
+	}
 
-	//gamma 
-	//sum=pow(sum,vec3(1.0/2.2));
-	//FragColor=vec4(sum,1);
+	else{
+		if(GIsEdge==1){
+			if(EdgeOn==1){
+				FragColor=LineColor;
 
-	if(GIsEdge==1){
-        FragColor=LineColor;
-    }else{
+			}else{
+				discard;
+			}
+			return;
+		}
 		vec3 sum=vec3(0.0);
 		vec3 n=normalize(GNormal);
 		for(int i=0;i<3;i++){
 			sum+=microfacetModel(i,Gposition,n);
 		}
-		//gamma 
+		//gamma
 		sum=pow(sum,vec3(1.0/2.2));
 
 		vec3 toon=pbrToonShade();
 
 		vec3 Final=mix(sum, toon, 0.5);
-
 		FragColor=vec4(Final,1);
 
-      //  FragColor=vec4(toonShade(),1.0);
-    }
+		//  FragColor=vec4(toonShade(),1.0);
 
-	//FragColor=LineColor;
+		//FragColor=LineColor;
+	}
+	
 
 
 }

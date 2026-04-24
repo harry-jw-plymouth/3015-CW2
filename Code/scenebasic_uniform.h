@@ -42,6 +42,7 @@ private:
     std::unique_ptr<ObjMesh> RockMesh;
     std::unique_ptr<ObjMesh> ButterflyMesh;
     std::unique_ptr<ObjMesh> TreeMesh;
+	std::unique_ptr<ObjMesh > TestMesh;
     Plane plane;
 
     //textures 
@@ -60,6 +61,7 @@ private:
     bool mouseFirstEntry = true;
     float cameraLastXPos = 800.0f / 2.0f;
     float cameraLastYPos = 600.0f / 2.0f;
+
 
     float deltaTime = 0.0f;
    
