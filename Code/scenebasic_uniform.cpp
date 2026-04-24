@@ -332,7 +332,7 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
     glBindTexture(GL_TEXTURE_2D, RockTexture);
   //  Shaders.setUniform("RenderType", 1);
     CombinedShaders.use();
-    CombinedShaders.setUniform("EdgeOn", 0);
+    CombinedShaders.setUniform("EdgeOn", 1);
     CombinedShaders.setUniform("RenderMode", 0);
     model = mat4(1.0f);
 

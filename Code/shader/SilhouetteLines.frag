@@ -93,6 +93,38 @@ vec3 pbrToonShade(){
 	}
     return sum;
 }
+vec3 pbrToonShadeWithTexture(){ 
+	vec3 sum= vec3(0.0);
+	vec3 n=normalize(GNormal);
+	
+	
+	for(int i=0; i <3;i++){
+		vec3 l=vec3(0.0);
+		vec3 LightI=PBRLight[i].L;
+		if(PBRLight[i].Position.w==0.0){ // directional light
+			l=normalize(PBRLight[i].Position.xyz);
+		}else{
+			l=PBRLight[i].Position.xyz-Gposition;
+			float dist=length(l);
+			l=normalize(l);
+			LightI/=(dist*dist); //attenuation
+		}
+		float nDotL = max(dot(n, l), 0.0);
+		float ToonValue=ceil(nDotL*levels)*scaleFactor;
+
+		vec3 base;
+		if(PBRMaterial.Metal)
+        {
+            base =texture(MainTexture,GTexCoord).rgb * 0.6;
+        }else{
+			base =texture(MainTexture,GTexCoord).rgb;
+		}
+		
+		base=base *ToonValue*LightI;
+		sum+=base;
+	}
+    return sum;
+}
 //pbr functions
 float ggxDistribution(float nDotH){ 
 	float alpha2=PBRMaterial.Rough*PBRMaterial.Rough*PBRMaterial.Rough*PBRMaterial.Rough;
@@ -108,6 +140,13 @@ vec3 shlickFresnel(float lDotH){
 	vec3 f0=vec3(0.04);
 	if(PBRMaterial.Metal){
 		f0=PBRMaterial.Color;
+	}
+	return f0+(1-f0)*pow(1.0-lDotH,5);
+}
+vec3 shlickFresnelWithTexture(float lDotH){
+	vec3 f0=vec3(0.04);
+	if(PBRMaterial.Metal){
+		f0=texture(MainTexture, GTexCoord).rgb;;
 	}
 	return f0+(1-f0)*pow(1.0-lDotH,5);
 }
@@ -137,6 +176,33 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	return (diffuseBrdf+PI*specBrdf)*lightI*nDotL;
 
 }
+vec3 microfacetModelWithTexture(int lightIdx,vec3 position, vec3 n){
+	vec3 diffuseBrdf=vec3(0.0); //metallic
+	vec3 TextureAlbedo=texture(MainTexture,GTexCoord).rgb;
+	if(!PBRMaterial.Metal){
+		diffuseBrdf= TextureAlbedo;
+	}
+
+	vec3 l=vec3(0.0),lightI=PBRLight[lightIdx].L;
+	if(PBRLight[lightIdx].Position.w==0.0){ // directional light
+		l=normalize(PBRLight[lightIdx].Position.xyz);
+	}else{
+		l=PBRLight[lightIdx].Position.xyz-position;
+		float dist=length(l);
+		l=normalize(l);
+		lightI/=(dist*dist); //attenuation
+	}
+	vec3 v=normalize(-position);
+	vec3 h=normalize(l+v);
+	float nDotH=dot(n,h);
+	float lDotH=dot(l,h);
+	float nDotL=max(dot(n,l),0.0);
+	float nDotV=dot(n,v);
+	vec3 specBrdf=0.25*ggxDistribution(nDotH)*shlickFresnelWithTexture(lDotH)*geomSmith(nDotL)*geomSmith(nDotV);
+
+	return (diffuseBrdf+PI*specBrdf)*lightI*nDotL;
+
+}
 
 
 void main(){
@@ -150,8 +216,21 @@ void main(){
 			}
 			return;
 		}
-		vec3 texColor=texture(MainTexture,GTexCoord).rgb;
-		FragColor=vec4(texColor,1.0);
+	//	vec3 texColor=texture(MainTexture,GTexCoord).rgb;
+		//FragColor=vec4(texColor,1.0);
+
+		vec3 sum=vec3(0.0);
+		vec3 n=normalize(GNormal);
+		for(int i=0;i<3;i++){
+			sum+=microfacetModelWithTexture(i,Gposition,n);
+		}
+		//gamma
+		sum=pow(sum,vec3(1.0/2.2));
+
+		vec3 toon=pbrToonShadeWithTexture();
+
+		vec3 Final=mix(sum, toon, 0.5);
+		FragColor=vec4(Final,1);
 	}
 
 	else{
