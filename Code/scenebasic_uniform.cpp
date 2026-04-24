@@ -32,6 +32,7 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
 }
 void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
+	TreeTexture = Texture::loadTexture("media/texture/TreeTexture.png");
 }
 
 
@@ -326,6 +327,7 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
     glBindTexture(GL_TEXTURE_2D, RockTexture);
   //  Shaders.setUniform("RenderType", 1);
     CombinedShaders.use();
+    CombinedShaders.setUniform("TextureMixingOn", 0);
     CombinedShaders.setUniform("EdgeOn", 1);
     CombinedShaders.setUniform("RenderMode", 0);
     model = mat4(1.0f);
@@ -346,6 +348,7 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
     CombinedShaders.use();
+    CombinedShaders.setUniform("TextureMixingOn", 0);
     CombinedShaders.setUniform("RenderMode", 1);
     CombinedShaders.setUniform("EdgeOn", 1);
     CombinedShaders.setUniform("PBRMaterial.Rough", rough);
@@ -369,6 +372,7 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
 }
 void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     model = mat4(1.0f);
+    CombinedShaders.setUniform("TextureMixingOn", 0);
     CombinedShaders.setUniform("RenderMode", 1);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
@@ -379,7 +383,11 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
 }
 void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
     model = mat4(1.0f);
-    CombinedShaders.setUniform("RenderMode", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, TreeTexture);
+    CombinedShaders.setUniform("RenderMode", 0);
+    CombinedShaders.setUniform("TextureMixingOn", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
     model = glm::scale(model, Scale);

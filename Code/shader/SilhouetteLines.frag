@@ -32,6 +32,9 @@ flat in int GIsEdge;
 uniform int RenderMode; 
 //0 is textured, 1 is untextured
 
+uniform int TextureMixingOn; 
+//0 no texture, 1 mix with texture, 2 use texture only
+
 uniform int EdgeOn;
 layout(location=0) out vec4 FragColor;
 
