@@ -22,22 +22,6 @@ uniform struct PBRMaterialInfo{
 	float shininess; 
 }PBRMaterial;
 
-// Sil lines structs 
-struct LightInfo{
-    vec4 Position;
-    vec3 Intensity;
-    vec3 La;
-    vec3 L;
-};
-uniform LightInfo Light;
-
-struct MaterialInfo{
-    vec3 Ka; //ambient reflectivity 
-    vec3 Kd;  //diffuse reflectivity
-    vec3 Ks; // specular reflectivity
-    float shininess;  //specular shininess factor
-};
-uniform MaterialInfo Material;
 
 uniform vec4 LineColor;
 
@@ -55,14 +39,6 @@ layout(location=0) out vec4 FragColor;
 const int levels =3;
 const float scaleFactor=1.0/levels;
 
-vec3 toonShade(){
-    vec3 s=normalize(Light.Position.xyz-Gposition.xyz);
-    vec3 ambient=PBRMaterial.Ka;
-    float cosine=dot(s,GNormal);
-    vec3 diffuse=PBRMaterial.Kd*ceil(cosine*levels)*scaleFactor;
-
-    return Light.Intensity*(ambient+diffuse);
-}
 vec3 pbrToonShade(){ 
 	vec3 sum= vec3(0.0);
 	vec3 n=normalize(GNormal);

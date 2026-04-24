@@ -146,7 +146,7 @@ void SceneBasic_Uniform::initScene()
     lightAngle = 0.0f;
     lightRotationSpeed = 1.5f;
 
-     Shaders.setUniform("Light[0].L", vec3(45.0f));
+    Shaders.setUniform("Light[0].L", vec3(45.0f));
 	Shaders.setUniform("Light[0].Position", view * lightPos);
     Shaders.setUniform("Light[1].L", vec3(0.3f));
     Shaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
@@ -162,16 +162,10 @@ void SceneBasic_Uniform::initScene()
     CombinedShaders.setUniform("PBRLight[2].L", vec3(45.0f));
     CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
 
-    //silhouette lines set up 
-    
-    CombinedShaders.setUniform("Light.Position", view*lightPos);
-    CombinedShaders.setUniform("Light.Intensity", 1.0f, 1.0f, 1.0f);
-
-    CombinedShaders.setUniform("Material.Kd", 0.7f, 0.5f, 0.2f);
-    CombinedShaders.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
-
     CombinedShaders.setUniform("PBRMaterial.Kd", 0.7f, 0.5f, 0.2f);
     CombinedShaders.setUniform("PBRMaterial.Ka", 0.2f, 0.2f, 0.2f);
+
+    //silhouette lines set up 
 
     CombinedShaders.setUniform("EdgeWidth", 0.02f);
     CombinedShaders.setUniform("PctExtend", 0.07f);
@@ -270,7 +264,7 @@ void SceneBasic_Uniform::render()
     glPolygonOffset(1.0f, 1.0f);
 
     CombinedShaders.use();
-    CombinedShaders.setUniform("Light.Position", view * lightPos);
+  //  CombinedShaders.setUniform("Light.Position", view * lightPos);
     CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
 
   //  Shaders.use();
@@ -351,9 +345,6 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
 }
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
-    //Shaders.setUniform("Material.Rough", rough);
-   // Shaders.setUniform("Material.Metal", metal);
-   // Shaders.setUniform("Material.Color", color);
     CombinedShaders.use();
     CombinedShaders.setUniform("RenderMode", 1);
     CombinedShaders.setUniform("EdgeOn", 1);
