@@ -308,7 +308,7 @@ void SceneBasic_Uniform::render()
     Shaders.setUniform("Light[0].Position", view * lightPos);
     Shaders.setUniform("Light[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
     Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
-    Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos + vec3(0.0f, 0.5f, 0.0f), 1.0f));
+    Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos + vec3(0.0f, 0.5f, 0.0f)+SwordModifiedPos, 1.0f));
     Shaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
 
     CombinedShaders.use();
@@ -316,7 +316,7 @@ void SceneBasic_Uniform::render()
     CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
     CombinedShaders.setUniform("PBRLight[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
     CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
-    CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f), 1.0f));
+    CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f)+SwordModifiedPos, 1.0f));
     CombinedShaders.setUniform("PBRLight[3].L", vec3(SwordLightIntensity));
 
   //  Shaders.use();
@@ -340,10 +340,27 @@ void SceneBasic_Uniform::MoveSwordAfterButterfliesFound() {
     if (SwordPos.y < 1.5f) {
         SwordPos += vec3(0.0f, 0.0004f, 0.0f);
     }
+    else {
+        AnimateSword();
+    }
     if(SwordLightIntensity<45.0f){
         SwordLightIntensity += 0.1f;
 	}
 	
+}
+void SceneBasic_Uniform::AnimateSword() {
+    if (SwordMovingUp) {
+		SwordModifiedPos += vec3(0.0f, 0.0009f, 0.0f);
+        if(SwordModifiedPos.y>0.4f){
+            SwordMovingUp = false;
+		}
+    }
+    else {
+        SwordModifiedPos -= vec3(0.0f, 0.0009f, 0.0f);
+        if (SwordModifiedPos.y < 0.0f) {
+            SwordMovingUp = true;
+        }
+    }
 }
 void SceneBasic_Uniform::DrawAllSwords() {
 
@@ -368,26 +385,7 @@ void SceneBasic_Uniform::DrawAllSwords() {
     //silver
    // drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
 
-}/*
- void SceneBasic_Uniform::drawFloor() {
-    CombinedShaders.use();
-    CombinedShaders.setUniform("RenderMode", 0);
-    CombinedShaders.setUniform("EdgeOn", 0);
-    CombinedShaders.setUniform("PBRMaterial.Rough", 0.9f);
-    CombinedShaders.setUniform("PBRMaterial.Metal", 0);
-    CombinedShaders.setUniform("PBRMaterial.Color", glm::vec3(0.2f));
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
-
-    //setMatrices();
-    SetMatricesDynamic(CombinedShaders);
-    plane.render();
-    CombinedShaders.use();
-    CombinedShaders.setUniform("RenderMode", 1);
 }
- 
- */
 void SceneBasic_Uniform::drawFloor() {
     Shaders.use();
     glActiveTexture(GL_TEXTURE0);
@@ -432,6 +430,7 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
    // Shaders.use();
    // Shaders.setUniform("RenderType", 0); 
 }
+
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
     CombinedShaders.use();
@@ -443,7 +442,7 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
     CombinedShaders.setUniform("PBRMaterial.Color", color);
     model = mat4(1.0f);
     
-    model = glm::translate(model, pos);
+    model = glm::translate(model, pos+SwordModifiedPos);
     model = glm::scale(model, vec3(  0.1f));
   //  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));

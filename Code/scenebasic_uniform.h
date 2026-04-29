@@ -56,7 +56,10 @@ private:
     float tPrev,angle,lightAngle,lightRotationSpeed;
 	glm::vec4 lightPos;
 
+    bool SwordMovingUp = true;
+
     vec3 SwordPos= vec3( - 0.f, 0.f, 3.f);
+    vec3 SwordModifiedPos = vec3(0.0f, 0.0f, 0.0f);
     vec3 EyeCoordinates = vec3(0.0f, 0.75f, 6.25f);
     vec3 CameraFront = vec3(0.0f, 0.0f, -1.0f);
     vec3 CameraUp = vec3(0.0f, 1.0f, 0.0f);
@@ -89,6 +92,7 @@ private:
     void ProcessUserInput(int key, int action);
     void compile();
 public:
+	void AnimateSword();
 	void MoveSwordAfterButterfliesFound();
 	void CheckIfAllButerfliesFound();
 	void CheckForButterflyCollisions();
