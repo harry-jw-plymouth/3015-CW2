@@ -34,6 +34,7 @@ void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
 	TreeTexture = Texture::loadTexture("media/texture/TreeTexture.png");
     ForestFloorTexture=Texture::loadTexture("media/texture/ForestFloor.png");
+    ButterflyTexture = Texture::loadTexture("media/Butterfly/texture.bmp");
 }
 
 
@@ -398,8 +399,11 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
 }
 void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     model = mat4(1.0f);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ButterflyTexture);
     CombinedShaders.setUniform("TextureMixingOn", 0);
-    CombinedShaders.setUniform("RenderMode", 1);
+    CombinedShaders.setUniform("RenderMode", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
     model = glm::scale(model, vec3(0.01f));
