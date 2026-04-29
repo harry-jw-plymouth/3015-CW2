@@ -1,6 +1,7 @@
 #version 460
 
 layout (binding=0) uniform sampler2D MainTexture;
+layout(binding=1) uniform sampler2D MixedTexture;
 in vec2 GTexCoord;
 
 // PBR parameters
@@ -33,7 +34,7 @@ uniform int RenderMode;
 //0 is textured, 1 is untextured
 
 uniform int TextureMixingOn; 
-//0 no texture, 1 mix with texture, 2 use texture only
+//0 mixng off, 1 mixing on 
 
 uniform int EdgeOn;
 layout(location=0) out vec4 FragColor;
@@ -66,6 +67,10 @@ vec3 pbrToonShade(){
 			base =texture(MainTexture,GTexCoord).rgb;
 		}else{
 			base = PBRMaterial.Color;
+		}
+		if(TextureMixingOn==1){
+			vec3 mixColor=texture(MixedTexture,GTexCoord).rgb;
+			base=mix(base,mixColor,0.3);
 		}
 
 		if(PBRMaterial.Metal)
@@ -100,6 +105,10 @@ vec3 shlickFresnelWithTexture(float lDotH){
 		else{
 			f0=PBRMaterial.Color;
 		}
+		if(TextureMixingOn==1){
+			vec3 mixColor=texture(MixedTexture,GTexCoord).rgb;
+			f0=mix(f0,mixColor,0.3);
+		}
 		
 	}
 	return f0+(1-f0)*pow(1.0-lDotH,5);
@@ -107,12 +116,17 @@ vec3 shlickFresnelWithTexture(float lDotH){
 vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	vec3 diffuseBrdf=vec3(0.0); //metallic
 	vec3 TextureAlbedo=texture(MainTexture,GTexCoord).rgb;
+
 	if(!PBRMaterial.Metal){
 		if(RenderMode==0){
 			diffuseBrdf= TextureAlbedo;
 		}
 		else{
 			diffuseBrdf=PBRMaterial.Color;
+		}
+		if(TextureMixingOn==1){
+			vec3 mixColor=texture(MixedTexture,GTexCoord).rgb;
+			diffuseBrdf=mix(diffuseBrdf,mixColor,0.3);
 		}
 	}
 

@@ -51,6 +51,7 @@ private:
 	GLuint TreeTexture;
     GLuint ForestFloorTexture;
 	GLuint ButterflyTexture;
+	GLuint MossTexture;
 
 
     float tPrev,angle,lightAngle,lightRotationSpeed;

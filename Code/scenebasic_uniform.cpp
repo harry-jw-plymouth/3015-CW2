@@ -32,9 +32,11 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
 }
 void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
-	TreeTexture = Texture::loadTexture("media/texture/TreeTexture.png");
+    TreeTexture = Texture::loadTexture("media/texture/Bark.png");
+	//TreeTexture = Texture::loadTexture("media/texture/TreeTexture.png");
     ForestFloorTexture=Texture::loadTexture("media/texture/ForestFloor.png");
     ButterflyTexture = Texture::loadTexture("media/Butterfly/texture.bmp");
+    MossTexture = Texture::loadTexture("media/texture/moss.png");
 }
 
 
@@ -182,8 +184,8 @@ void SceneBasic_Uniform::initScene()
 
     //silhouette lines set up 
 
-    CombinedShaders.setUniform("EdgeWidth", 0.02f);
-    CombinedShaders.setUniform("PctExtend", 0.07f);
+    CombinedShaders.setUniform("EdgeWidth", 0.009f);
+    CombinedShaders.setUniform("PctExtend", 0.03f);
     CombinedShaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
    
     Shaders.use();
@@ -390,6 +392,7 @@ void SceneBasic_Uniform::drawFloor() {
     Shaders.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ForestFloorTexture);
+	Shaders.setUniform("TextureMixingOn", 0);
     Shaders.setUniform("RenderMode", 0);
     Shaders.setUniform("EdgeOn", 0);
     Shaders.setUniform("Material.Rough", 0.9f);
@@ -476,8 +479,10 @@ void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, TreeTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, MossTexture);
     CombinedShaders.setUniform("RenderMode", 0);
-    CombinedShaders.setUniform("TextureMixingOn", 0);
+    CombinedShaders.setUniform("TextureMixingOn", 1);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
     model = glm::scale(model, Scale);
