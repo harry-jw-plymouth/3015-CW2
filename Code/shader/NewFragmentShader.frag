@@ -4,6 +4,9 @@
 
 layout(location = 0) out vec4 FragColor;
 
+layout (binding=0) uniform sampler2D MainTexture;
+in vec2 GTexCoord;
+
 //in vec3 Position;
 //in vec3 Normal; 
 
@@ -84,18 +87,37 @@ vec3 shlickFresnel(float lDotH){
 	}
 	return f0+(1-f0)*pow(1.0-lDotH,5);
 }
+vec3 shlickFresnelWithTexture(float lDotH){
+	vec3 f0=vec3(0.04);
+	if(PBRMaterial.Metal){
+		if(RenderMode==0){
+			f0=texture(MainTexture,GTexCoord).rgb;
+		}
+		else{
+			f0=PBRMaterial.Color;
+		}
+		
+	}
+	return f0+(1-f0)*pow(1.0-lDotH,5);
+}
 
 vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	vec3 diffuseBrdf=vec3(0.0); //metallic
-	if(!Material.Metal){
-		diffuseBrdf=Material.Color;
+	vec3 TextureAlbedo=texture(MainTexture,GTexCoord).rgb;
+	if(!PBRMaterial.Metal){
+		if(RenderMode==0){
+			diffuseBrdf= TextureAlbedo;
+		}
+		else{
+			diffuseBrdf=PBRMaterial.Color;
+		}
 	}
 
-	vec3 l=vec3(0.0),lightI=Light[lightIdx].L;
-	if(Light[lightIdx].Position.w==0.0){ // directional light
-		l=normalize(Light[lightIdx].Position.xyz);
+	vec3 l=vec3(0.0),lightI=PBRLight[lightIdx].L;
+	if(PBRLight[lightIdx].Position.w==0.0){ // directional light
+		l=normalize(PBRLight[lightIdx].Position.xyz);
 	}else{
-		l=Light[lightIdx].Position.xyz-position;
+		l=PBRLight[lightIdx].Position.xyz-position;
 		float dist=length(l);
 		l=normalize(l);
 		lightI/=(dist*dist); //attenuation
@@ -106,7 +128,7 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	float lDotH=dot(l,h);
 	float nDotL=max(dot(n,l),0.0);
 	float nDotV=dot(n,v);
-	vec3 specBrdf=0.25*ggxDistribution(nDotH)*shlickFresnel(lDotH)*geomSmith(nDotL)*geomSmith(nDotV);
+	vec3 specBrdf=0.25*ggxDistribution(nDotH)*shlickFresnelWithTexture(lDotH)*geomSmith(nDotL)*geomSmith(nDotV);
 
 	return (diffuseBrdf+PI*specBrdf)*lightI*nDotL;
 
@@ -122,42 +144,58 @@ vec3 toonShade(){
 
     return TexLight.Intensity*(ambient+diffuse);
 }
+vec3 pbrToonShade(){ 
+	vec3 sum= vec3(0.0);
+	vec3 n=normalize(GNormal);
+	
+	
+	for(int i=0; i <3;i++){
+		vec3 l=vec3(0.0);
+		vec3 LightI=PBRLight[i].L;
+		if(PBRLight[i].Position.w==0.0){ // directional light
+			l=normalize(PBRLight[i].Position.xyz);
+		}else{
+			l=PBRLight[i].Position.xyz-Gposition;
+			float dist=length(l);
+			l=normalize(l);
+			LightI/=(dist*dist); //attenuation
+		}
+		float nDotL = max(dot(n, l), 0.0);
+		float ToonValue=ceil(nDotL*levels)*scaleFactor;
+
+		vec3 base;
+		if(RenderMode==0){
+			base =texture(MainTexture,GTexCoord).rgb;
+		}else{
+			base = PBRMaterial.Color;
+		}
+
+		if(PBRMaterial.Metal)
+        {
+            base =base * 0.6;
+        }//else{
+		//	base =texture(MainTexture,GTexCoord).rgb;
+	//	}
+		
+		base=base *ToonValue*LightI;
+		sum+=base;
+	}
+    return sum;
+}
 
 void main(){
-	if(RenderType==1){
-		//texture rendering
-		//FragColor=vec4(0.0);
-		if(GIsEdge==1){
-			FragColor=LineColor;
-		}else{
-			FragColor=vec4(toonShade(),1.0);
-		}
-
+	vec3 sum=vec3(0.0);
+	vec3 n=normalize(GNormal);
+	for(int i=0;i<3;i++){
+		sum+=microfacetModel(i,Gposition,n);
 	}
-	else if(RenderType==2){
-		// PBR 
-		vec3 sum=vec3(0.0);
-		vec3 n=normalize(GNormal);
-		for(int i=0;i<3;i++){
-			sum+=microfacetModel(i,Gposition,n);
-		}
+	//gamma
+	sum=pow(sum,vec3(1.0/2.2));
 
-		//gamma 
-		sum=pow(sum,vec3(1.0/2.2));
-		FragColor=vec4(sum,1);
-	}
-	else{
-		// PBR 
-		vec3 sum=vec3(0.0);
-		vec3 n=normalize(GNormal);
-		for(int i=0;i<3;i++){
-			sum+=microfacetModel(i,Gposition,n);
-		}
+	vec3 toon=pbrToonShade();
 
-		//gamma 
-		sum=pow(sum,vec3(1.0/2.2));
-		FragColor=vec4(sum,1);
-	}
+	vec3 Final=mix(sum, toon, 0.5);
+	FragColor=vec4(Final,1);
 
 	
 

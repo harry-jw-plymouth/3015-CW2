@@ -33,6 +33,7 @@ tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
 void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
 	TreeTexture = Texture::loadTexture("media/texture/TreeTexture.png");
+    ForestFloorTexture=Texture::loadTexture("media/texture/ForestFloor.png");
 }
 
 
@@ -264,6 +265,9 @@ void SceneBasic_Uniform::render()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0f, 1.0f);
 
+    Shaders.use();
+    Shaders.setUniform("Light[0].Position", view * lightPos);
+
     CombinedShaders.use();
   //  CombinedShaders.setUniform("Light.Position", view * lightPos);
     CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
@@ -275,7 +279,7 @@ void SceneBasic_Uniform::render()
 
 }
 void SceneBasic_Uniform::drawScene() {
-    //drawFloor();
+    drawFloor();
 
    DrawAllSwords();
     DrawRock(vec3(-0.0f, -0.5f, 3.0f));
@@ -303,8 +307,8 @@ void SceneBasic_Uniform::DrawAllSwords() {
     //silver
    // drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
 
-}
-void SceneBasic_Uniform::drawFloor() {
+}/*
+ void SceneBasic_Uniform::drawFloor() {
     CombinedShaders.use();
     CombinedShaders.setUniform("RenderMode", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
@@ -316,11 +320,33 @@ void SceneBasic_Uniform::drawFloor() {
     model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
 
     //setMatrices();
-	SetMatricesDynamic(CombinedShaders);
+    SetMatricesDynamic(CombinedShaders);
     plane.render();
     CombinedShaders.use();
     CombinedShaders.setUniform("RenderMode", 1);
 }
+ 
+ */
+void SceneBasic_Uniform::drawFloor() {
+    Shaders.use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ForestFloorTexture);
+    Shaders.setUniform("RenderMode", 0);
+    Shaders.setUniform("EdgeOn", 0);
+    Shaders.setUniform("Material.Rough", 0.9f);
+    Shaders.setUniform("Material.Metal", 0);
+    Shaders.setUniform("Material.Color", glm::vec3(0.2f));
+
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
+
+    setMatrices();
+	//SetMatricesDynamic(CombinedShaders);
+    plane.render();
+    CombinedShaders.use();
+    CombinedShaders.setUniform("RenderMode", 1);
+}
+
 void SceneBasic_Uniform::DrawRock(const vec3& pos)
 {
     glActiveTexture(GL_TEXTURE0);
@@ -377,7 +403,8 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
     model = glm::scale(model, vec3(0.01f));
-    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+  //  model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     SetMatricesDynamic(CombinedShaders);
     ButterflyMesh->render();
 }
@@ -397,7 +424,7 @@ void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
  //   TestMesh->render();
 }
 void SceneBasic_Uniform::DrawAllButterflies() {
-	
+	DrawButterfly(vec3(-2.0f, 0.0f, 2.0f));
 }
 void SceneBasic_Uniform::DrawAllTrees() {
     DrawTree(vec3(-2.0f, -1.0f, 2.0f), vec3(1.0f, 1.5f, 1.0f));

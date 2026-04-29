@@ -3,6 +3,8 @@
 //general parameters 
 
 layout(location = 0) out vec4 FragColor;
+layout (binding=0) uniform sampler2D MainTexture;
+in vec2 VTexCoords;
 
 in vec3 Position;
 in vec3 Normal; 
@@ -10,6 +12,7 @@ in vec3 Normal;
 //0 is PBR for metals
 // 1 is texture
 uniform int RenderType;
+uniform int RenderMode;
 
 // PBR parameters
 const float PI=3.1415926535358979323846;
@@ -20,7 +23,9 @@ uniform struct LightInfo{
 	vec3 L; // Intensity 
 } Light[3];
 
-
+//toon shading levels
+const int levels =3;
+const float scaleFactor=1.0/levels;
 
 uniform struct MaterialInfo{
 	float Rough; //Roughness
@@ -40,19 +45,70 @@ float geomSmith(float dotProd){
 	float denom=dotProd*(1.0-k)+k;
 	return 1.0/denom;
 }
+vec3 pbrToonShade(){ 
+	vec3 sum= vec3(0.0);
+	vec3 n=normalize(Normal);
+	
+	
+	for(int i=0; i <3;i++){
+		vec3 l=vec3(0.0);
+		vec3 LightI=Light[i].L;
+		if(Light[i].Position.w==0.0){ // directional light
+			l=normalize(Light[i].Position.xyz);
+		}else{
+			l=Light[i].Position.xyz-Position;
+			float dist=length(l);
+			l=normalize(l);
+			LightI/=(dist*dist); //attenuation
+		}
+		float nDotL = max(dot(n, l), 0.0);
+		float ToonValue=ceil(nDotL*levels)*scaleFactor;
 
-vec3 shlickFresnel(float lDotH){
+		vec3 base;
+		if(RenderMode==0){
+			base =texture(MainTexture,VTexCoords).rgb;
+		}else{
+			base = Material.Color;
+		}
+
+		if(Material.Metal)
+        {
+            base =base * 0.6;
+        }//else{
+		//	base =texture(MainTexture,VTexCoords).rgb;
+	//	}
+		
+		base=base *ToonValue*LightI;
+		sum+=base;
+	}
+    return sum;
+}
+
+
+vec3 shlickFresnelWithTexture(float lDotH){
 	vec3 f0=vec3(0.04);
 	if(Material.Metal){
-		f0=Material.Color;
+		if(RenderMode==0){
+			f0=texture(MainTexture,VTexCoords).rgb;
+		}
+		else{
+			f0=Material.Color;
+		}
+		
 	}
 	return f0+(1-f0)*pow(1.0-lDotH,5);
 }
 
 vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
-	vec3 diffuseMaterial=vec3(0.0); //metallic
+	vec3 diffuseBrdf=vec3(0.0); //metallic
+	vec3 TextureAlbedo=texture(MainTexture,VTexCoords).rgb;
 	if(!Material.Metal){
-		diffuseMaterial=Material.Color;
+		if(RenderMode==0){
+			diffuseBrdf= TextureAlbedo;
+		}
+		else{
+			diffuseBrdf=Material.Color;
+		}
 	}
 
 	vec3 l=vec3(0.0),lightI=Light[lightIdx].L;
@@ -70,33 +126,26 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	float lDotH=dot(l,h);
 	float nDotL=max(dot(n,l),0.0);
 	float nDotV=dot(n,v);
-	vec3 specBrdf=0.25*ggxDistribution(nDotH)*shlickFresnel(lDotH)*geomSmith(nDotL)*geomSmith(nDotV);
+	vec3 specBrdf=0.25*ggxDistribution(nDotH)*shlickFresnelWithTexture(lDotH)*geomSmith(nDotL)*geomSmith(nDotV);
 
-	return (diffuseMaterial+PI*specBrdf)*lightI*nDotL;
+	return (diffuseBrdf+PI*specBrdf)*lightI*nDotL;
 
 }
 
 
 
 void main(){
-	if(RenderType==1){
-		//texture rendering
-
-
+	vec3 sum=vec3(0.0);
+	vec3 n=normalize(Normal);
+	for(int i=0;i<3;i++){
+		sum+=microfacetModel(i,Position,n);
 	}
-	else{
-		// PBR 
-		vec3 sum=vec3(0.0);
-		vec3 n=normalize(Normal);
-		for(int i=0;i<3;i++){
-			sum+=microfacetModel(i,Position,n);
-		}
+	//gamma
+	sum=pow(sum,vec3(1.0/2.2));
 
-		//gamma 
-		sum=pow(sum,vec3(1.0/2.2));
-		FragColor=vec4(sum,1);
-	}
+	vec3 toon=pbrToonShade();
 
-	
+	vec3 Final=mix(sum, toon, 0.5);
+	FragColor=vec4(Final,1);
 
 }

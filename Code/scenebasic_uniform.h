@@ -48,6 +48,7 @@ private:
     //textures 
     GLuint RockTexture;
 	GLuint TreeTexture;
+    GLuint ForestFloorTexture;
 
 
     float tPrev,angle,lightAngle,lightRotationSpeed;
