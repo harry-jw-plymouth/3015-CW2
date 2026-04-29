@@ -155,7 +155,7 @@ void SceneBasic_Uniform::initScene()
     Shaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
     Shaders.setUniform("Light[2].L", vec3(45.0f));
     Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
-    Shaders.setUniform("Light[3].L", vec3(0.0f));
+    Shaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
     Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos, 1.0f));
 
 
@@ -309,6 +309,7 @@ void SceneBasic_Uniform::render()
     Shaders.setUniform("Light[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
     Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
     Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos + vec3(0.0f, 0.5f, 0.0f), 1.0f));
+    Shaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
 
     CombinedShaders.use();
   //  CombinedShaders.setUniform("Light.Position", view * lightPos);
@@ -316,6 +317,7 @@ void SceneBasic_Uniform::render()
     CombinedShaders.setUniform("PBRLight[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
     CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
     CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f), 1.0f));
+    CombinedShaders.setUniform("PBRLight[3].L", vec3(SwordLightIntensity));
 
   //  Shaders.use();
     drawScene();
@@ -338,6 +340,9 @@ void SceneBasic_Uniform::MoveSwordAfterButterfliesFound() {
     if (SwordPos.y < 1.5f) {
         SwordPos += vec3(0.0f, 0.0004f, 0.0f);
     }
+    if(SwordLightIntensity<45.0f){
+        SwordLightIntensity += 0.1f;
+	}
 	
 }
 void SceneBasic_Uniform::DrawAllSwords() {

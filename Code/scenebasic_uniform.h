@@ -79,7 +79,9 @@ private:
     };
 	bool Butterfliesfound[5] = { false,false,false,false,false };
 
+
     float deltaTime = 0.0f;
+	float SwordLightIntensity = 0.0f;
    
     float lastFrame = 0.0f;
 
