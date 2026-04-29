@@ -2,6 +2,7 @@
 #define SCENEBASIC_UNIFORM_H
 
 #include "helper/scene.h"
+#include <list>
 
 #include <glad/glad.h>
 #include "helper/glslprogram.h"
@@ -65,6 +66,17 @@ private:
     float cameraLastXPos = 800.0f / 2.0f;
     float cameraLastYPos = 600.0f / 2.0f;
 
+	bool ButterfliesAllFound = false;
+
+    int NumberOfButterFlies = 5;
+    vec3 ButterflyPositions[5] = {
+        vec3(5.0f, 0.0f, 5.0f),
+        vec3(2.0f, 0.0f, 6.0f),
+        vec3(-2.0f, 0.0f, -5.0f),
+        vec3(3.0f, 0.0f, 9.0f),
+        vec3(-6.0f, 0.0f, 8.0f)
+    };
+	bool Butterfliesfound[5] = { false,false,false,false,false };
 
     float deltaTime = 0.0f;
    
@@ -74,6 +86,8 @@ private:
     void ProcessUserInput(int key, int action);
     void compile();
 public:
+	void CheckIfAllButerfliesFound();
+	void CheckForButterflyCollisions();
     void SetupSkybox();
     void BuildAdjacencies();
     void SetMatricesDynamic(GLSLProgram &Shader);

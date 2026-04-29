@@ -225,6 +225,30 @@ void SceneBasic_Uniform::update(float t)
 		lightPos.z = glm::sin(lightAngle) * 7.0f;
 
     }
+	CheckForButterflyCollisions();
+}
+void SceneBasic_Uniform::CheckForButterflyCollisions() {
+        for (int i = 0; i < 5; i++) {
+            if (!Butterfliesfound[i]) {
+                float distance = length(EyeCoordinates - ButterflyPositions[i]);
+                if (distance < 1.0f) { // Collision threshold
+                    Butterfliesfound[i] = true;
+                    std::cout << "Butterfly " << i + 1 << " found!" << std::endl;
+					CheckIfAllButerfliesFound();
+                }
+            }
+		}
+}
+void SceneBasic_Uniform::CheckIfAllButerfliesFound() {
+    bool allFound = true;
+    for (int i = 0; i < NumberOfButterFlies; i++) {
+        if (!Butterfliesfound[i]) {
+            return;
+        }
+    }
+    if (allFound) {
+        std::cout << "Congratulations! You found all the butterflies! The sword is now freed" << std::endl;
+    }
 }
 void SceneBasic_Uniform::setMatrices() {
     mat4 mv = view * model;
@@ -406,7 +430,7 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     CombinedShaders.setUniform("RenderMode", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
-    model = glm::scale(model, vec3(0.01f));
+    model = glm::scale(model, vec3(0.05f));
   //  model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     SetMatricesDynamic(CombinedShaders);
@@ -428,7 +452,14 @@ void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
  //   TestMesh->render();
 }
 void SceneBasic_Uniform::DrawAllButterflies() {
-	DrawButterfly(vec3(-2.0f, 0.0f, 2.0f));
+    for(int i=0;i<std::size(ButterflyPositions);i++){
+        if (!Butterfliesfound[i]) {
+            DrawButterfly(ButterflyPositions[i]);
+        }
+		
+	}
+
+	//DrawButterfly(vec3(-2.0f, 0.0f, 2.0f));
 }
 void SceneBasic_Uniform::DrawAllTrees() {
     DrawTree(vec3(-2.0f, -1.0f, 2.0f), vec3(1.0f, 1.5f, 1.0f));
