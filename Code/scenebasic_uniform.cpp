@@ -234,19 +234,20 @@ void SceneBasic_Uniform::CheckForButterflyCollisions() {
                 if (distance < 1.0f) { // Collision threshold
                     Butterfliesfound[i] = true;
                     std::cout << "Butterfly " << i + 1 << " found!" << std::endl;
-					CheckIfAllButerfliesFound();
+                    CheckIfAllButerfliesFound();
                 }
             }
 		}
 }
 void SceneBasic_Uniform::CheckIfAllButerfliesFound() {
-    bool allFound = true;
+    ButterfliesAllFound = true;
     for (int i = 0; i < NumberOfButterFlies; i++) {
         if (!Butterfliesfound[i]) {
+			ButterfliesAllFound = false;
             return;
         }
     }
-    if (allFound) {
+    if (ButterfliesAllFound) {
         std::cout << "Congratulations! You found all the butterflies! The sword is now freed" << std::endl;
     }
 }
@@ -314,19 +315,30 @@ void SceneBasic_Uniform::drawScene() {
    
     //
 }
+void SceneBasic_Uniform::MoveSwordAfterButterfliesFound() {
+    if (SwordPos.y < 1.5f) {
+        SwordPos += vec3(0.0f, 0.0004f, 0.0f);
+    }
+	
+}
 void SceneBasic_Uniform::DrawAllSwords() {
 
-    // draw dielectric cows with varying roughness
-    int numCows = 9;
 
     //draw metal cows
     float metalRough = 0.43f;
-    // gold
-  //  drawSword(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
-    // copper
-  //  drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
+  
     //aluminium
-    drawSword(glm::vec3(-0.f, 0.f, 3.f), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
+    drawSword(glm::vec3(SwordPos), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
+
+    if (ButterfliesAllFound) {
+        MoveSwordAfterButterfliesFound();
+    }
+
+
+    // gold
+//  drawSword(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
+  // copper
+//  drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
     //titanium
   //  drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
     //silver
@@ -430,7 +442,7 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     CombinedShaders.setUniform("RenderMode", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
-    model = glm::scale(model, vec3(0.05f));
+    model = glm::scale(model, vec3(0.005f));
   //  model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
     SetMatricesDynamic(CombinedShaders);
