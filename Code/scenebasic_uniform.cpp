@@ -155,15 +155,27 @@ void SceneBasic_Uniform::initScene()
     Shaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
     Shaders.setUniform("Light[2].L", vec3(45.0f));
     Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    Shaders.setUniform("Light[3].L", vec3(0.0f));
+    Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos, 1.0f));
+
 
 
     CombinedShaders.use();
-    CombinedShaders.setUniform("PBRLight[0].L", vec3(45.0f));
+   CombinedShaders.setUniform("PBRLight[0].L", vec3(45.0f));
     CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
+
     CombinedShaders.setUniform("PBRLight[1].L", vec3(0.3f));
     CombinedShaders.setUniform("PBRLight[1].Position", vec4(0, 0.15f, -1.0f, 0));
+
     CombinedShaders.setUniform("PBRLight[2].L", vec3(45.0f));
     CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
+
+    CombinedShaders.setUniform("PBRLight[3].L", vec3(0.0f));
+    CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f), 1.0f));
+
+    //   CombinedShaders.setUniform("PBRLight[0].L", vec3(0.0f));
+    // //  CombinedShaders.setUniform("PBRLight[1].L", vec3(0.0f));
+ //   CombinedShaders.setUniform("PBRLight[2].L", vec3(0.0f));
 
     CombinedShaders.setUniform("PBRMaterial.Kd", 0.7f, 0.5f, 0.2f);
     CombinedShaders.setUniform("PBRMaterial.Ka", 0.2f, 0.2f, 0.2f);
@@ -176,6 +188,7 @@ void SceneBasic_Uniform::initScene()
    
     Shaders.use();
     
+
 }
 
 void SceneBasic_Uniform::compile()
@@ -293,10 +306,16 @@ void SceneBasic_Uniform::render()
 
     Shaders.use();
     Shaders.setUniform("Light[0].Position", view * lightPos);
+    Shaders.setUniform("Light[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
+    Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos + vec3(0.0f, 0.5f, 0.0f), 1.0f));
 
     CombinedShaders.use();
   //  CombinedShaders.setUniform("Light.Position", view * lightPos);
     CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
+    CombinedShaders.setUniform("PBRLight[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
+    CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f), 1.0f));
 
   //  Shaders.use();
     drawScene();

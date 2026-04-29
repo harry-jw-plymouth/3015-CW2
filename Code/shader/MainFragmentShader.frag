@@ -21,7 +21,7 @@ const float PI=3.1415926535358979323846;
 uniform struct LightInfo{
 	vec4 Position; //Light position in camera coords
 	vec3 L; // Intensity 
-} Light[3];
+} Light[4];
 
 //toon shading levels
 const int levels =3;
@@ -50,7 +50,7 @@ vec3 pbrToonShade(){
 	vec3 n=normalize(Normal);
 	
 	
-	for(int i=0; i <3;i++){
+	for(int i=0; i <4;i++){
 		vec3 l=vec3(0.0);
 		vec3 LightI=Light[i].L;
 		if(Light[i].Position.w==0.0){ // directional light
@@ -137,7 +137,7 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 void main(){
 	vec3 sum=vec3(0.0);
 	vec3 n=normalize(Normal);
-	for(int i=0;i<3;i++){
+	for(int i=0;i<4;i++){
 		sum+=microfacetModel(i,Position,n);
 	}
 	//gamma

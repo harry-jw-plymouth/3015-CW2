@@ -10,7 +10,7 @@ const float PI=3.1415926535358979323846;
 uniform struct PBRLightInfo{
 	vec4 Position; //Light position in camera coords
 	vec3 L; // Intensity 
-} PBRLight[3];
+} PBRLight[4];
 
 uniform struct PBRMaterialInfo{
 	float Rough; //Roughness
@@ -47,7 +47,7 @@ vec3 pbrToonShade(){
 	vec3 n=normalize(GNormal);
 	
 	
-	for(int i=0; i <3;i++){
+	for(int i=0; i <4;i++){
 		vec3 l=vec3(0.0);
 		vec3 LightI=PBRLight[i].L;
 		if(PBRLight[i].Position.w==0.0){ // directional light
@@ -149,7 +149,7 @@ void main(){
 	}
 	vec3 sum=vec3(0.0);
 	vec3 n=normalize(GNormal);
-	for(int i=0;i<3;i++){
+	for(int i=0;i<4;i++){
 		sum+=microfacetModel(i,Gposition,n);
 	}
 	//gamma
