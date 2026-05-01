@@ -23,9 +23,28 @@ To run the code please navigate to the following directory: Code-> Debug and the
  In addition. there is some basic gameplay that can be interacted with. Around the scene is 5 butterflies, colliding the camera into these butterflies will collect them and make them dissapear. When all 5 butterflies have been found, the sword in the center will rise from its stone and glow denoting the games completion
 
  # How does the program work
+## C++
+The C++ code runs by first setting up all the values needed for the shaders,mostly in the initscene function. Then the render code is repeatedly run through to redraw it each frame. When each item is drawn, the relative settings/values are set first. For example drawing a sword has edges set to on, disintegration set to on, texture sampling set to off and texture mixing set to off. <br><br>
+This mostly runs uninterrupted until the program is terminated, however there is one thing that changes over time. As mentioned in the section above, the player can collect 5 butterflies to activate the sword. When this is done, a boolean will be set to true, which then will allow a function to be called from the draw sword function, specifically the function 'MoveSwordAfterAllButterfliesFound()'. This will be called each frame and it will slowly move the sword upwards and also increase the intensity of a light glowing from the sword giving the effect of a sword full of power rising from the ground. When it reaches a certain height it will start to bob up and down and the intensity of the light will be stabilised. In addition, when the condition is met, the sword will have disintegration turned off to make it look like it was repaired  <br><br>
+
+In addition a check is done for inputs with both the mouse( for camera direction) and WASD (for movement) being checked.
+
+## Shader code
+The code for shaders was made up of 3 parts, the geometery shader which emits vertexes for the edges for silhouette lines. The vertex shader which translates the positioning data into the correct format, and the fragement shader where the majority of shading features were implemented. There were 3 sets of shaders, one for the skybox, which essentially just applied the skybox textures, the combined shaders with geometery shader which were the main shaders used, and finnally main shader, which was essentially combined shaders without the geometery shader and silhouette lines. This was to allow a texture to be applied to the floor plane as this would cause errors when passed through geometery shader due to the fact it couldnt be loaded with adjacency. 
+The fragment shader in combined shaders has the most interesting functions 
+
 
 # program details 
 The shader program stands out from others mainly for its mix of physics based rendering (something generally used for more realistic rendering) with toon shading (something typically used for less realistic style shaders ). This combination allowed for a unique shader look that still ended up looking quite nice aesthetically. Compared the exisitng programs it is in unique place where it has the cartoonish elements while still looking like it could be real. The idea came from the idea of shading the scene(the scene being a sword in a stone in a forest) in particular inspiration was taken from the legend of zelda games where a similair scene can be found. In this series there are typically cartoonish looking graphics which was where the idea for this originated. The development of the scene started with PBR as a base before moving onto add the cartoon elements
 
 # video link
 
+# Other details
+
+
+#Software engineering issues 
+One software engineering issue that came up was to do with the use of models. The models used were not designed with triangulation in mind (like the model used in the silhouette lines lab). When using the models I found I identified that it appeared that when the geometry shader added edge qauds, it would sometimes mess
+
+# Achievments and reflection
+Overall I believe I have achieved a well put together shader model with sufficient dynamic options for lots of interesting shading opportunities. By adding the differant toggles I believe I have made my shader suitable for lots of differant purposes. In addition the scene set up the to showcase it acts as a good tech demo to properly demonstrate the opportunities with the shaders.
+If I was to do this project again, there are a few things I would change. Firstly, 
