@@ -6,9 +6,8 @@ does what?<br />
 did you get the idea from? What did you start with? How did you make yours unique? Did
 you start with a given shader/project?) yes<br />
 • Include a link to a video report that details the above but also goes into more detail on:<br />
-o Anything else which will help us understand how your shader works.<br />
 o Are there any software engineering issues, such as the trade-off between performance
-and good practice?<br />
+and good practice?<br /> yes
 o A (brief) evaluation of what you think you have achieved, and what (if anything) you
 would do differently, knowing what you now know. Don’t be modest but be realistic! <br />
 
@@ -40,12 +39,9 @@ The shader program stands out from others mainly for its mix of physics based re
 
 # video link
 
-# Other details
-
-
 #Software engineering issues 
-One software engineering issue that came up was to do with the use of models. The models used were not designed with triangulation in mind (like the model used in the silhouette lines lab). When using the models I found I identified that it appeared that when the geometry shader added edge qauds, it would sometimes mess
+One software engineering issue that came up was to do with the use of models. The models used were not designed with adjacency/triangulation in mind (like the model used in the silhouette lines lab). When using the models I found I identified that it appeared that when the geometry shader added edge qauds, it would sometimes mess up when generating these qauds. This means that at a few angles there were random black lines floating and when edge lines were active for all models this was very prevelant. For this reason, most models had edge lines turned off for them to ensure that the scene did not become a mess of black lines. In the end, the sword and the stone were the key things with this left on
 
 # Achievments and reflection
 Overall I believe I have achieved a well put together shader model with sufficient dynamic options for lots of interesting shading opportunities. By adding the differant toggles I believe I have made my shader suitable for lots of differant purposes. In addition the scene set up the to showcase it acts as a good tech demo to properly demonstrate the opportunities with the shaders.
-If I was to do this project again, there are a few things I would change. Firstly, 
+While I do think I have done well. there are certainly things that I would change.
