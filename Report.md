@@ -61,8 +61,14 @@ Please note,the code for this tenchnique was an adapted version of the code seen
 My shader program is special in the way it combines PBR and cell shading/silhouette lines 
 
 # Anything else which will help us to understand how your prototype works 
-# Gameplay description 
+## Gameplay description 
 Some very basic gameplay was added to help the scene come alive. In this gameplay, there is a set of 5 butterflies moving around the scene. When the player collides with a butterfly, that butterfly is counted as collected and will dissapear. When all 5 are collected, the gaame will be seen as completed, and as a result of the game being completed the sword will rise from the stone and begin to glow. It is very simple gameplay but it acts as a method of giving the player a task to complete
+
+## Code origins
+The code used in the program was taken mostly from lab sessions and then combined and adjusted to fit the purposes of this project.<br>
+The starting point of the code was to use the PBR from lab session 10 and test out how the metallics looked on the sword model. After particularly liking how this looked,I decided to use this as my base. Originally the plan was to build off my scene from CW1 but after seeing this I decided to completely remake it and where necessary pull things over.<br>
+With this code base created, the next steps were implementing the silhouette lines and and toon shading code from lab session 8,prompting the use of the geometry shader.  This ultimately caused the creation of a second set of shaders, as the plane used for the ground of the scene was not compatible with the adjacency triangles required. These shaders are essentially the same, just without the addition of silhouette lines. Finnally the disintegration effect from lab session 9 was implemented to allow for a damaged look on the sword. This required some adjsutment to the geometry shader to pass more values. <br>
+As previously mentioned, aspects of my submission for CW1 were re implemented in some ways. For example the same tree model was used and the code for moving butterflies was partially reused but adapted to support an array of butterfly position values
 
 ## Asset usage 
 A variety of assets were used in the development of this project. These are detailed below as well as their source.<br />
