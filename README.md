@@ -45,7 +45,7 @@ The shader program stands out from others mainly for its mix of physics based re
 
 # video link
 
-#Software engineering issues 
+# Software engineering issues 
 One software engineering issue that came up was to do with the use of models. The models used were not designed with adjacency/triangulation in mind (like the model used in the silhouette lines lab). When using the models I found I identified that it appeared that when the geometry shader added edge qauds, it would sometimes mess up when generating these qauds. This means that at a few angles there were random black lines floating and when edge lines were active for all models this was very prevelant. For this reason, most models had edge lines turned off for them to ensure that the scene did not become a mess of black lines. In the end, the sword and the stone were the key things with this left on
 
 # Achievments and reflection
