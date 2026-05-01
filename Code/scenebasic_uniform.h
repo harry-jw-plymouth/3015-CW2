@@ -86,6 +86,29 @@ private:
     };
 	bool Butterfliesfound[5] = { false,false,false,false,false };
 
+    bool ButterfliesMovingForward[5] = { true,true,false,false,true };
+    bool ButterfliesMovingUp[5] = { false,true,false,true,false };
+
+    vec3 ButterflyModifiedPosition[5] = {
+        vec3(0.0f,1.3f,0.0f),
+        vec3(0.0f,1.1f,0.0f),
+        vec3(0.0f,0.9f,0.0f),
+        vec3(0.0f,1.5f,0.0f),
+        vec3(0.0f,0.5f,0.0f)
+    };
+
+    float RotationValues[5] = {
+        0.0f,0.0f,180.0f,180.0f,0.0f
+    };
+    int RotationFrames[5] = {
+        16,16,16,16,16
+    };
+
+    float ButterflySpeeds[5] = {
+        0.009,0.008,0.0085,0.0092,0.0087
+    };
+
+
 
     float deltaTime = 0.0f;
 	float SwordLightIntensity = 0.0f;
@@ -96,6 +119,7 @@ private:
     void ProcessUserInput(int key, int action);
     void compile();
 public:
+    void UpdateButterflyPositions();
     void SetUpNoise();
 	void AnimateSword();
 	void MoveSwordAfterButterfliesFound();
@@ -114,7 +138,7 @@ public:
     void DrawAllTrees();
     void DrawAllSwords();
     void DrawTree(const glm::vec3& pos, const vec3& Scale);
-    void DrawButterfly(const glm::vec3& pos);
+    void DrawButterfly(const glm::vec3& pos,int i);
     void drawFloor();
     void drawScene();
 

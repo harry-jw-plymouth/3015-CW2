@@ -247,7 +247,7 @@ void SceneBasic_Uniform::update(float t)
 void SceneBasic_Uniform::CheckForButterflyCollisions() {
         for (int i = 0; i < 5; i++) {
             if (!Butterfliesfound[i]) {
-                float distance = length(EyeCoordinates - ButterflyPositions[i]);
+                float distance = length(EyeCoordinates - (ButterflyPositions[i]+ButterflyModifiedPosition[i]));
                 if (distance < 1.0f) { 
                     Butterfliesfound[i] = true;
                     std::cout << "Butterfly " << i + 1 << " found!" << std::endl;
@@ -491,7 +491,7 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
     SwordMesh->render();
     //TestMesh->render();
 }
-void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
+void SceneBasic_Uniform::DrawButterfly(const vec3& pos,int i) {
     model = mat4(1.0f);
 
     glActiveTexture(GL_TEXTURE0);
@@ -501,6 +501,7 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     CombinedShaders.setUniform("RenderMode", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);
+    model=glm::rotate(model, radians(RotationValues[i]), vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, vec3(0.005f));
   //  model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
@@ -524,10 +525,49 @@ void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
     TreeMesh->render();
  //   TestMesh->render();
 }
+void SceneBasic_Uniform::UpdateButterflyPositions() {
+    for (int i = 0; i < 5; i++) {
+        if (ButterfliesMovingUp[i]) {
+            ButterflyModifiedPosition[i] += (vec3(0.0f, ButterflySpeeds[i], 0.0f));
+        }
+        else {
+            ButterflyModifiedPosition[i] -= (vec3(0.0f, ButterflySpeeds[i], 0.0f));
+        }
+        if (ButterfliesMovingForward[i]) {
+            ButterflyModifiedPosition[i] += (vec3( ButterflySpeeds[i],0.0f, 0.0f));
+        }
+        else {
+            ButterflyModifiedPosition[i] -= (vec3( ButterflySpeeds[i],0.0f, 0.0f));
+        }
+        if (RotationFrames[i] < 16) {
+            RotationValues[i] += 11.25;
+            RotationFrames[i]++;
+        }
+        
+
+
+        if (ButterflyModifiedPosition[i].y > 1.5f) {
+            ButterfliesMovingUp[i] = false;
+        }
+        if (ButterflyModifiedPosition[i].y < 0.5f) {
+            ButterfliesMovingUp[i] = true;
+        }
+        if (ButterflyModifiedPosition[i].x > 2.5f) {
+            ButterfliesMovingForward[i] = false;
+            RotationFrames[i] = 0;
+        }
+        if (ButterflyModifiedPosition[i].x < -2.5f) {
+            ButterfliesMovingForward[i] = true;
+            RotationFrames[i] = 0;
+        }
+    }
+}
 void SceneBasic_Uniform::DrawAllButterflies() {
+    
+    UpdateButterflyPositions();
     for(int i=0;i<std::size(ButterflyPositions);i++){
         if (!Butterfliesfound[i]) {
-            DrawButterfly(ButterflyPositions[i]);
+            DrawButterfly(ButterflyPositions[i]+ButterflyModifiedPosition[i],i);
         }
 		
 	}
@@ -541,6 +581,23 @@ void SceneBasic_Uniform::DrawAllTrees() {
     DrawTree(vec3(2.9f, -1.0f, -3.4f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(5.0f, -1.0f, 1.0f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(-5.0f, -1.0f, -2.0f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(-3.0f, -1.0f, -1.0f), vec3(1.0f, 1.5f, 1.0f));
+
+    DrawTree(vec3(-1.2f, -1.0f, 1.0f), vec3(0.9f, 1.3f, 0.9f));
+    DrawTree(vec3(1.5f, -1.0f, 0.5f), vec3(1.1f, 1.6f, 1.1f)); 
+
+    DrawTree(vec3(-3.5f, -1.0f, 4.5f), vec3(0.9f, 1.4f, 0.9f));
+
+  
+    DrawTree(vec3(3.5f, -1.0f, 5.5f), vec3(1.3f, 2.0f, 1.3f));
+ //   DrawTree(vec3(1.0f, -1.0f, 6.0f), vec3(1.4f, 2.2f, 1.4f));
+    DrawTree(vec3(-2.0f, -1.0f, 6.5f), vec3(1.5f, 2.3f, 1.5f));
+
+  //  DrawTree(vec3(6.5f, -1.0f, -1.5f), vec3(1.2f, 1.6f, 1.2f));
+    DrawTree(vec3(6.0f, -1.0f, 2.5f), vec3(1.0f, 1.5f, 1.0f));
+    DrawTree(vec3(-6.5f, -1.0f, 1.5f), vec3(1.2f, 1.7f, 1.2f));
+  //  DrawTree(vec3(-6.0f, -1.0f, -3.5f), vec3(1.1f, 1.6f, 1.1f));
+    
 }
 void SceneBasic_Uniform::resize(int w, int h)
 {
