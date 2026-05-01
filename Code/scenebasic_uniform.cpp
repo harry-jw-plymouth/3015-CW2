@@ -134,6 +134,8 @@ void SceneBasic_Uniform::initScene()
 
     SetupSkybox();
 
+    SetUpNoise();
+
     Shaders.use();
     Shaders.setUniform("RenderType", 0);
 
@@ -246,7 +248,7 @@ void SceneBasic_Uniform::CheckForButterflyCollisions() {
         for (int i = 0; i < 5; i++) {
             if (!Butterfliesfound[i]) {
                 float distance = length(EyeCoordinates - ButterflyPositions[i]);
-                if (distance < 1.0f) { // Collision threshold
+                if (distance < 1.0f) { 
                     Butterfliesfound[i] = true;
                     std::cout << "Butterfly " << i + 1 << " found!" << std::endl;
                     CheckIfAllButerfliesFound();
@@ -266,6 +268,27 @@ void SceneBasic_Uniform::CheckIfAllButerfliesFound() {
         std::cout << "Congratulations! You found all the butterflies! The sword is now freed" << std::endl;
     }
 }
+void SceneBasic_Uniform::SetUpNoise() {
+    CombinedShaders.use();
+    //prog.setUniform("Color", vec4(1.0f, 0.0f, 0.0f, 1.0f));
+   // CombinedShaders.setUniform("NoiseTex", 2);
+
+
+    mat4 slice = mat4(1.0f);
+    slice = glm::rotate(slice, glm::radians(15.0f), vec3(1.0f, 0.0f, 0.0f));
+    slice = glm::rotate(slice, glm::radians(-20.0f), vec3(0.0f, 0.0f, 1.0f));
+    slice = glm::scale(slice, vec3(2.0f, 2.0f, 1.0f));
+    slice = glm::translate(slice, vec3(-0.35f, -0.5f, 1.0f));
+
+    CombinedShaders.setUniform("Slice", slice);
+
+    GLuint noiseTex = NoiseTex::generate2DTex();
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, noiseTex);
+
+    CombinedShaders.setUniform("LowThreshold", 0.4f);
+    CombinedShaders.setUniform("HighThreshold", 0.7f);
+}
 void SceneBasic_Uniform::setMatrices() {
     mat4 mv = view * model;
     Shaders.setUniform("ModelViewMatrix", mv);
@@ -277,6 +300,7 @@ void SceneBasic_Uniform::SetMatricesDynamic(GLSLProgram &Shader) {
     Shader.setUniform("ModelViewMatrix", mv);
     Shader.setUniform("NormalMatrix", glm::mat3(mv));
     Shader.setUniform("MVP", projection * mv);
+    
 }
 void SceneBasic_Uniform::DrawSkyBox() {
     //draw sky
@@ -415,6 +439,7 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
     glBindTexture(GL_TEXTURE_2D, RockTexture);
   //  Shaders.setUniform("RenderType", 1);
     CombinedShaders.use();
+    CombinedShaders.setUniform("DisintegrationOn", 0);
     CombinedShaders.setUniform("TextureMixingOn", 0);
     CombinedShaders.setUniform("EdgeOn", 1);
     CombinedShaders.setUniform("RenderMode", 0);
@@ -438,7 +463,14 @@ void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, cons
 {
     CombinedShaders.use();
     CombinedShaders.setUniform("TextureMixingOn", 0);
+    if (ButterfliesAllFound) {
+        CombinedShaders.setUniform("DisintegrationOn", 0);
+    }
+    else {
+        CombinedShaders.setUniform("DisintegrationOn", 1);
+    }
     CombinedShaders.setUniform("RenderMode", 1);
+    CombinedShaders.setUniform("ModelMatrix", model);
     CombinedShaders.setUniform("EdgeOn", 1);
     CombinedShaders.setUniform("PBRMaterial.Rough", rough);
     CombinedShaders.setUniform("PBRMaterial.Metal", metal);
@@ -465,6 +497,7 @@ void SceneBasic_Uniform::DrawButterfly(const vec3& pos) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ButterflyTexture);
     CombinedShaders.setUniform("TextureMixingOn", 0);
+    CombinedShaders.setUniform("DisintegrationOn", 0);
     CombinedShaders.setUniform("RenderMode", 0);
     CombinedShaders.setUniform("EdgeOn", 0);
     model = glm::translate(model, pos);

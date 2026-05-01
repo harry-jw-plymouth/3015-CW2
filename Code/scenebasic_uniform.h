@@ -22,6 +22,7 @@
 #include "helper/grid.h"
 #include "helper/frustum.h"
 #include "GLFW/glfw3.h";
+#include "helper/noisetex.h";
 
 using glm::vec3;
 using glm::mat4;
@@ -52,6 +53,8 @@ private:
     GLuint ForestFloorTexture;
 	GLuint ButterflyTexture;
 	GLuint MossTexture;
+
+    GLuint quad;
 
 
     float tPrev,angle,lightAngle,lightRotationSpeed;
@@ -93,6 +96,7 @@ private:
     void ProcessUserInput(int key, int action);
     void compile();
 public:
+    void SetUpNoise();
 	void AnimateSword();
 	void MoveSwordAfterButterfliesFound();
 	void CheckIfAllButerfliesFound();
