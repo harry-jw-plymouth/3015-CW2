@@ -1,5 +1,5 @@
 How does the user interact with your executable? How do you open and control the software
-you wrote (exe file)?<br />
+you wrote (exe file)? Yes<br /> 
 • How does the program code work? How do the classes and functions fit together and who
 does what?<br />
 • What makes your shader program special and how does it compare to similar things? (Where
@@ -17,4 +17,7 @@ would do differently, knowing what you now know. Don’t be modest but be realis
 
 #How to use the software 
 ## Running the code 
-To run the code please navigate to the following dierctory: Code-> Debug and then open "Project_template.exe". This Will run the code. <br /> While using the code, WASD can be used to move the camera position to look around the scene and the mouse can be used to change the direction the camera is looking
+To run the code please navigate to the following directory: Code-> Debug and then open "Project_template.exe". This Will run the code. <br />
+## Interaction details
+ While running the code, WASD can be used to move the camera position to look around the scene and the mouse can be used to change the direction the camera is looking. 
+ In addition. there is some basic gameplay that can be interacted with. Around the scene is 5 butterflies, colliding the camera into these butterflies will collect them and make them dissapear. When all 5 butterflies have been found, the sword in the center will rise from its stone and glow denoting the games completion
