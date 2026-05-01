@@ -1,7 +1,7 @@
 How does the user interact with your executable? How do you open and control the software
 you wrote (exe file)? Yes<br /> 
 • How does the program code work? How do the classes and functions fit together and who
-does what?<br />
+does what? yes <br />
 • What makes your shader program special and how does it compare to similar things? (Where
 did you get the idea from? What did you start with? How did you make yours unique? Did
 you start with a given shader/project?) yes<br />
@@ -10,6 +10,9 @@ o Are there any software engineering issues, such as the trade-off between perfo
 and good practice?<br /> yes
 o A (brief) evaluation of what you think you have achieved, and what (if anything) you
 would do differently, knowing what you now know. Don’t be modest but be realistic! <br />
+
+Add images
+
 
 # 3015 CW2 Shader tool 
 # By Harry Watton
@@ -46,5 +49,5 @@ The shader program stands out from others mainly for its mix of physics based re
 One software engineering issue that came up was to do with the use of models. The models used were not designed with adjacency/triangulation in mind (like the model used in the silhouette lines lab). When using the models I found I identified that it appeared that when the geometry shader added edge qauds, it would sometimes mess up when generating these qauds. This means that at a few angles there were random black lines floating and when edge lines were active for all models this was very prevelant. For this reason, most models had edge lines turned off for them to ensure that the scene did not become a mess of black lines. In the end, the sword and the stone were the key things with this left on
 
 # Achievments and reflection
-Overall I believe I have achieved a well put together shader model with sufficient dynamic options for lots of interesting shading opportunities. By adding the differant toggles I believe I have made my shader suitable for lots of differant purposes. In addition the scene set up the to showcase it acts as a good tech demo to properly demonstrate the opportunities with the shaders.
-While I do think I have done well. there are certainly things that I would change.
+Overall I believe I have achieved a well put together shader model with sufficient dynamic options for lots of interesting shading opportunities. By adding the differant toggles I believe I have made my shader suitable for lots of differant purposes. In addition the scene set up the to showcase it acts as a good tech demo to properly demonstrate the opportunities with the shaders.<br>
+While I do think I have done well, there are certainly things that I would change if I was to do this project again. Mainly, I think I would have leaned more heavily into the cartoon styling of the toon shading and leaned away from PBR. While I do like how the final result came out, I do think there were better options for applying this. For example shadow mapping would have added some nice realistic depth while keeping a cool cartoon style 
