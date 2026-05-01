@@ -17,7 +17,9 @@ Operating system: windows 11<br />
 Visual studio version: Visual studio 2022<br />
 
 # How does it work?
-A simple description of how my shader program works is that it uses a geometery shader to allow for silhouette lines before the fragment shader applies phyics based rendering(PBR) and  applying toon shading to add the cartoon style look that cones with silhouette lines. Below is details on the overall pipeline as well as details on the individual features that come together to build said pipeline 
+To put it simply, my shader program runs by generating edge qauds using a geometry shader, then in the fragment shade, PBR and toon shading is applied. In addition there is the option to toggle between flat colours and full textures, displaying edge lines, and disintegration effects to add a weathered look to the objects as well as texture mixing.
+
+
 ## Pipeline 
 This section details the shader pipeline and the process it follows to provide shading 
 ### Vertex shader 
@@ -59,13 +61,20 @@ Please note,the code for this tenchnique was an adapted version of the code seen
 My shader program is special in the way it combines PBR and cell shading/silhouette lines 
 
 # Anything else which will help us to understand how your prototype works 
+# Gameplay description 
+Some very basic gameplay was added to help the scene come alive. In this gameplay, there is a set of 5 butterflies moving around the scene. When the player collides with a butterfly, that butterfly is counted as collected and will dissapear. When all 5 are collected, the gaame will be seen as completed, and as a result of the game being completed the sword will rise from the stone and begin to glow. It is very simple gameplay but it acts as a method of giving the player a task to complete
 
 ## Asset usage 
 A variety of assets were used in the development of this project. These are detailed below as well as their source.<br />
+### Models
 Sword model: https://free3d.com/3d-model/medieval-sword-69788.html <br />
-Rock: https://www.turbosquid.com/3d-models/rock07base3ds-3d-1899446 <br />
-Tree: https://www.turbosquid.com/3d-models/gentree-103-generic-tree-103-3d-model-2062798 <br />
-Skybox and ground: https://opengameart.org/content/forest-skyboxes
+Rock model: https://www.turbosquid.com/3d-models/rock07base3ds-3d-1899446 <br />
+Tree model: https://www.turbosquid.com/3d-models/gentree-103-generic-tree-103-3d-model-2062798 <br />
+### Textures
+Skybox: https://opengameart.org/content/forest-skyboxes
+moss/leaves: Source code from labs
+Ground:
+Bar:
 
  # Use of AI statement
 
