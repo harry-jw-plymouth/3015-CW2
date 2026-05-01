@@ -14,7 +14,7 @@ would do differently, knowing what you now know. Don’t be modest but be realis
 # 3015 CW2 Shader tool 
 # By Harry Watton
 
-#How to use the software 
+# How to use the software 
 ## Running the code 
 To run the code please navigate to the following directory: Code-> Debug and then open "Project_template.exe". This Will run the code. <br />
 ## Interaction details
@@ -30,8 +30,11 @@ This mostly runs uninterrupted until the program is terminated, however there is
 In addition a check is done for inputs with both the mouse( for camera direction) and WASD (for movement) being checked.
 
 ## Shader code
-The code for shaders was made up of 3 parts, the geometery shader which emits vertexes for the edges for silhouette lines. The vertex shader which translates the positioning data into the correct format, and the fragement shader where the majority of shading features were implemented. There were 3 sets of shaders, one for the skybox, which essentially just applied the skybox textures, the combined shaders with geometery shader which were the main shaders used, and finnally main shader, which was essentially combined shaders without the geometery shader and silhouette lines. This was to allow a texture to be applied to the floor plane as this would cause errors when passed through geometery shader due to the fact it couldnt be loaded with adjacency. 
-The fragment shader in combined shaders has the most interesting functions 
+The code for shaders was made up of 3 parts, the geometery shader which emits vertexes for the edges for silhouette lines. The vertex shader which translates the positioning data into the correct format, and the fragement shader where the majority of shading features were implemented. There were 3 sets of shaders, one for the skybox, which essentially just applied the skybox textures, the combined shaders with geometery shader which were the main shaders used, and finnally main shader, which was essentially combined shaders without the geometery shader and silhouette lines. This was to allow a texture to be applied to the floor plane as this would cause errors when passed through geometery shader due to the fact it couldnt be loaded with adjacency. <br>
+The fragment shader in combined shaders has the most interesting functions aswell as the most built up code and classes. Main was the base for calling these, with the first check that was done being for whether that vertex was an edge, if it was then black would be returned. This entire section of code would be bypassed if the uniform for setting edge lines was turned off. <br> 
+Next, similar was done for disintegration. If the uniform for it was set to off the following would be bypassed. If set to on, the code would check the value of the noise texture and if it was within a certain threshold this vertex would be discarded. This allowed for an easily toggleable damage/ chipped look for the sword.<br> 
+Following this was the core shading with PBR and toon shading. Firstly PBR would be run for each light, with the total value from each light added up before applying gamma to keep the light at a reasonable level. To apply the PBR a mirco facet model is used which itself uses the ggxDistributio, shlickFresnelWithTexture and geomSmith functions in its calculations. In additon, the texture settings are checked here, if texture sampling is set to off, the set solid colour is used, otherwise the set texture is used. Similair is done for texture mixing, where if set to on, the primary colour/texture is mixed with the secondary texture before applying the microfacet model.<br>
+Following this, similair is done but this time with toon shading principles applied, where the light levels are less gradual adding a cartoonish effect. These 2 are then mixed for the final colour. 
 
 
 # program details 
