@@ -66,6 +66,8 @@ In the shaders, the geometery shader will pass the position data for the noise t
 <br /><br />
 
 Please note, the code for this was taken from the lab 9 excercise 3 code and adapted for use wih the other shader
+## Multiple shaders 
+In addition to the main shaders, there was also 2 other shader programs implemented. The First of these is the ground shaders which are used to draw the ground. These are essentially the same as the main shaders but stripped back to have no geometry shader. This is to allow the plane used for the ground to be drawn as the main shaders were incompatible due to the need for adjacency, which the plane could not be loaded with. In addition there were the skybox shaders, which essentially just apply the texture to the skybox.
 
 # What makes your shader program special and how does it compare to similar things? 
 My shader program is special in the way it combines PBR and cell shading/silhouette lines. These 2 techniques are not typically seen together. Where PBR is used for realistic looking shaders and toon shading is designed for less realistic cartoonish looks they dont ussually have a reason to interact. So my shaders are special in the way that it has a mix of cartoon style and realistic style in a way you normally would not see. Most existing shaders will lean into one or the other making my shader stand out.
