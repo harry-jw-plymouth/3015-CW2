@@ -6,6 +6,9 @@ The code was tested with the following specifications <br />
 Operating system: windows 11<br />
 Visual studio version: Visual studio 2022<br />
 
+# Video link 
+https://youtu.be/Ke21fgH7uZU 
+
 # How does it work?
 To put it simply, my shader program runs by generating edge quads using a geometry shader, then in the fragment shader, PBR and toon shading is applied. In addition there is the option to toggle between flat colours and full textures, displaying edge lines, and disintegration effects to add a weathered look to the objects as well as texture mixing.
 
