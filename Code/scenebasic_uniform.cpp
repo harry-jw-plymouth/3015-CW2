@@ -270,10 +270,8 @@ void SceneBasic_Uniform::CheckIfAllButerfliesFound() {
 }
 void SceneBasic_Uniform::SetUpNoise() {
     CombinedShaders.use();
-    //prog.setUniform("Color", vec4(1.0f, 0.0f, 0.0f, 1.0f));
-   // CombinedShaders.setUniform("NoiseTex", 2);
 
-
+    // generate model for applying noise texture
     mat4 slice = mat4(1.0f);
     slice = glm::rotate(slice, glm::radians(15.0f), vec3(1.0f, 0.0f, 0.0f));
     slice = glm::rotate(slice, glm::radians(-20.0f), vec3(0.0f, 0.0f, 1.0f));
@@ -282,9 +280,12 @@ void SceneBasic_Uniform::SetUpNoise() {
 
     CombinedShaders.setUniform("Slice", slice);
 
+    // generate noise tecture from helper class (From labs)
     GLuint noiseTex = NoiseTex::generate2DTex();
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
+
+    // set thresholds
 
     CombinedShaders.setUniform("LowThreshold", 0.4f);
     CombinedShaders.setUniform("HighThreshold", 0.7f);
@@ -400,16 +401,6 @@ void SceneBasic_Uniform::DrawAllSwords() {
     if (ButterfliesAllFound) {
         MoveSwordAfterButterfliesFound();
     }
-
-
-    // gold
-//  drawSword(glm::vec3(-3.0f, 0.0f, 3.f), metalRough, 1, glm::vec3(1, 0.71f, 0.29f));
-  // copper
-//  drawSword(glm::vec3(-1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
-    //titanium
-  //  drawSword(glm::vec3(1.5f, 0.0f, 3.f), metalRough, 1, glm::vec3(0.542f, 0.71f, 0.29f));
-    //silver
-   // drawSword(glm::vec3(3.0f, 0.0f, 3.0f), metalRough, 1, glm::vec3(0.95f, 0.71f, 0.29f));
 
 }
 void SceneBasic_Uniform::drawFloor() {

@@ -168,7 +168,9 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 
 
 void main(){
+	// check if it vertex is an edge set up by geometry shader
 	if(GIsEdge==1){
+		//check if edge lines uniform set to on, return flat black if on or discard if off
 		if(EdgeOn==1){
 			FragColor=LineColor;
 		}else{
