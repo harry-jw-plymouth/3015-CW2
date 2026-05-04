@@ -1,13 +1,3 @@
--Which version Visual Studio and Operating System you used to test/write the code
-locally? Done <br />
-o How does it work? <br />
-o What makes your shader program special and how does it compare to similar things? 
-(Where did you get the idea from? What did you start with? How did you make yours
-unique? Did you start with a given shader/project?)<br />  
-o Anything else which will help us to understand how your prototype works.<br />
-o A link to the GitHub repo you created for public use done<br />
-o A link to the unlisted YouTube Video<br />
-
 # Comp 3015 CW2 Optimised Developer tool 
 # By Harry Watton 
 
@@ -18,7 +8,6 @@ Visual studio version: Visual studio 2022<br />
 
 # How does it work?
 To put it simply, my shader program runs by generating edge quads using a geometry shader, then in the fragment shader, PBR and toon shading is applied. In addition there is the option to toggle between flat colours and full textures, displaying edge lines, and disintegration effects to add a weathered look to the objects as well as texture mixing.
-
 
 ## Pipeline 
 This section details the shader pipeline and the process it follows to provide shading 
@@ -61,7 +50,7 @@ In the fragment shader the edge flag is checked. If it is indeed an edge, the fr
 If it is not an edge, then the PBR code is run through (details of this can be seen in the section above), but once that is complete, a toon based shader adapted to work with PBR is run. This runs through similar steps as the PBR code but has a toon overlay, where instead of a smooth  light transition, shadows/light levels change more suddenly, this leads to more simple shading like what is seen in cartoons.<br />
 This is then mixed with the PBR calculation seen earlier to create the mixed look the shader aims for . In addition, the mixing can be controlled with one shading technique given bias to have more of a focus compared to the other if it makes sense, this is controlled by the value in the line where the 2 are mixed with 0.5 being balanced and increasing or decreasing the value (it must stay between 0 and 1) increasing the prevalence of one of the techniques. <br /><br />
 The edge lines can be controlled and adjusted with 2 variables. PctExtend increases the length of the silhouette, allowing for control of how silhouettes overlap. Edgewidth determines how wide the edges actually are, allowing for control over how thick/thin the lines should be and also giving the option between more bold lines or more subtle lines depending on the situation.<br />
-![Lines uniforms](Images/LineUniforms.png)<br />
+![Lines uniforms](Images/LineUniformsUpdated.png)<br />
 
 Please note,the code for this technique was an adapted version of the code seen in lab 6 part 3, the geometry shader is almost identical but passes some extra positional data.
 
@@ -69,7 +58,7 @@ Please note,the code for this technique was an adapted version of the code seen 
 ![disintegration chipped sword example](Images/LinesExample.png)<br />
 To add the effect of the sword being damaged with chunks missing, a disintegration effect was used. To ensure other models were not affected this could be toggled on and off by setting a uniform. <br />
 The way this worked was that in the C++, a noise texture would be generated and then passed into the shader. This was done using the nosie helper class from the lab sessions. In addition a slice model was set up to determine how noise would be sampled. Finnally the threshold for noise detection was declared and sent to the shader <br/>
-![Noise C++](Images/NoiseC++Code.png)<br />
+![Noise C++](Images/NoiseC++CodeUpdated.png)<br />
 
 In the shaders, the geometery shader will pass the position data for the noise texture to the fragement shader. In the fragment shader, the noise texture is then sampled in relation to the slice texture set up earlier. When sampling this texture, if the noise value sampled is between the threshold declared earlier then that fragment is discarded creating the effect of damage/chipping to the sword <br />
 ![Disintergation](Images/DisintegrationCode.png) 
