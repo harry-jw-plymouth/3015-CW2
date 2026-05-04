@@ -178,8 +178,10 @@ void main(){
 		}
 		return;
 	}
+	// check if disintegration effect turned on
 	if(DisintegrationOn==1){
 		
+		// samle noise texture and discared if within threshold declared earlier
 		vec4 slicedPos = Slice * vec4(GWorldPos, 1.0);
 		vec4 noise=texture(NoiseTex,slicedPos.xy);
 		if(noise.a<LowThreshold)
