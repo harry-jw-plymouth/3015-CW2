@@ -109,9 +109,15 @@ Bark: https://www.magnific.com/free-vector/dark-wood-texture_1036321.htm#fromVie
 
  # Use of AI statement
  AI was used throughout this project as a coding assistant (as specified as allowed in the coursework specifications). There were a variety of areas where this was used as detailed below<br><br>
+ ## Code assistant 
 One key area this was used was in assisting with setting up different shading features. An example of this was when setting up the disintegration, there was some issues with getting it to work with the existence of geometry shader, so following AIs advice I was able to set up and pass values as needed to be used for this purpose. <br> 
-Another example of how this was used was when setting up the PBR to work with the toon shading. Initially I had a much more simple toon shade set up that didnt interact as much with the PBR code. However this didnt give the desired PBR look the project was initally built around. So in this case the AI suggested and assisted in implementing the pbr toon shade function and the idea of mixing regular pbr and the toon shade pbr for the final result <br/>
-It was also used as a key assistant in debugging various issues throughout the program
+Another example of how this was used was when setting up the PBR to work with the toon shading. Initially I had a much more simple toon shade set up that didnt interact as much with the PBR code, it was a lot closer to how it appears in the lab version of the code. However this didnt give the desired PBR look the project was initally built around. So in this case the AI suggested and assisted in implementing the pbr toon shade function and the idea of mixing regular pbr and the toon shade pbr for the final result <br/>
+## debugging
+It was also used as a key assistant in debugging various issues throughout the program. A key example of this was when I was attempting to setup the silhouette lines and I was not fully understanding what the load with adjacency really meant. When I first tried passing the mesh that were loaded regularly to the shaders it caused an error, and I believed at the time this was to do with the mesh themselves (When looking over my code from the lab I missed the use of the way the mesh was loaded and instead saw triangulated in the mesh name and thought that meant only very specific models were suitable for this). With AIs help I was able to realise the lab code for the load with adjacencies function solved this problem, something that I initially missed. Initially AI also suggested ways to implement my own code to build adjacencies but this method was not used in the end. From this I also went on to make the seperate ground shaders due to the lack of ability to load plane in this way.
+
+
+## Features used in CW1 
+Some features of my code were reused/reimplemented from CW1, one of these features was the camera movement. While this was not a new addition for this coursework it is still important to note that as, stated in that use of AI statement, AI was used in the set up of this in an assistive role. The follow is an extract from that declearation:  "For example, when programming the camera movement, I was unsure initially how to edit the position and use GLFW functionality as the GLFW window was in scene runner and thus inaccessible to the code in scene basic uniform where I wanted to place the code. The AI suggested the solution (mentioned in the how does it work section) which I was then able to implement "
 
 
 # Github repository link
