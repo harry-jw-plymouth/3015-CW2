@@ -1,19 +1,3 @@
-How does the user interact with your executable? How do you open and control the software
-you wrote (exe file)? Yes<br /> 
-• How does the program code work? How do the classes and functions fit together and who
-does what? yes <br />
-• What makes your shader program special and how does it compare to similar things? (Where
-did you get the idea from? What did you start with? How did you make yours unique? Did
-you start with a given shader/project?) yes<br />
-• Include a link to a video report that details the above but also goes into more detail on:<br />
-o Are there any software engineering issues, such as the trade-off between performance
-and good practice?<br /> yes
-o A (brief) evaluation of what you think you have achieved, and what (if anything) you
-would do differently, knowing what you now know. Don’t be modest but be realistic! <br />
-
-Add images
-
-
 # 3015 CW2 Shader tool 
 # By Harry Watton
 
@@ -38,7 +22,6 @@ The fragment shader in combined shaders has the most interesting functions as we
 Next, similar was done for disintegration. If the uniform for it was set to off the following would be bypassed. If set to on, the code would check the value of the noise texture and if it was within a certain threshold this vertex would be discarded. This allowed for an easily toggleable damage/ chipped look for the sword.<br> 
 Following this was the core shading with PBR and toon shading. Firstly PBR would be run for each light, with the total value from each light added up before applying gamma to keep the light at a reasonable level. To apply the PBR a micro facet model is used which itself uses the ggxDistribution, shlickFresnelWithTexture and geomSmith functions in its calculations. In addition, the texture settings are checked here, if texture sampling is set to off, the set solid colour is used, otherwise the set texture is used. Similar is done for texture mixing, where if set to on, the primary colour/texture is mixed with the secondary texture before applying the microfacet model.<br>
 Following this, similar is done but this time with toon shading principles applied, where the light levels are less gradual adding a cartoonish effect. These 2 are then mixed for the final colour. 
-
 
 # program details 
 The shader program stands out from others mainly for its mix of physics based rendering (something generally used for more realistic rendering) with toon shading (something typically used for less realistic style shaders ). This combination allowed for a unique shader look that still ended up looking quite nice aesthetically. Compared to the existing programs it is in a unique place where it has cartoonish elements while still looking like it could be real. The idea came from the idea of shading the scene(the scene being a sword in a stone in a forest) in particular inspiration was taken from the legend of zelda games where a similar scene can be found. In this series there are typically cartoonish looking graphics which was where the idea for this originated. The development of the scene started with PBR as a base before moving onto add the cartoon elements
