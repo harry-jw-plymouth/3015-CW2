@@ -110,6 +110,18 @@
     <None Include="shader\SilhouetteLines.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shader\GroundFragmentShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\GroundVertexShader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\SkyBoxFragmentShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\SkyBoxVertexShader.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper\scene.h">

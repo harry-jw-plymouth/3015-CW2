@@ -33,13 +33,12 @@ using glm::radians;
 class SceneBasic_Uniform : public Scene
 {
 private:
-    GLSLProgram Shaders;
-    GLSLProgram CombinedShaders;
+    GLSLProgram GroundShaders;
+    GLSLProgram MainShaders;
     GLSLProgram SkyBoxShaders;
 
     SkyBox SkyBox;
 
-    Teapot teapot;
     std::unique_ptr<ObjMesh> SwordMesh;
     std::unique_ptr<ObjMesh> RockMesh;
     std::unique_ptr<ObjMesh> ButterflyMesh;
@@ -53,9 +52,6 @@ private:
     GLuint ForestFloorTexture;
 	GLuint ButterflyTexture;
 	GLuint MossTexture;
-
-    GLuint quad;
-
 
     float tPrev,angle,lightAngle,lightRotationSpeed;
 	glm::vec4 lightPos;
@@ -126,9 +122,7 @@ public:
 	void CheckIfAllButerfliesFound();
 	void CheckForButterflyCollisions();
     void SetupSkybox();
-    void BuildAdjacencies();
     void SetMatricesDynamic(GLSLProgram &Shader);
-    void MoveSwordPos();
 
     void LoadTextures();
     void DrawSkyBox();
@@ -142,11 +136,8 @@ public:
     void drawFloor();
     void drawScene();
 
-    void initBuffers();
-    float randFloat();
     SceneBasic_Uniform();
 
-    void setMatrices();
     void initScene();
     void update( float t );
     void render();

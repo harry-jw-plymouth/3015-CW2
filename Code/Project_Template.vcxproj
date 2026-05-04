@@ -168,12 +168,16 @@
     <None Include="shader\basic_uniform.frag" />
     <None Include="shader\basic_uniform.vert" />
     <None Include="shader\Geometry_Shader.gs" />
+    <None Include="shader\GroundFragmentShader.frag" />
+    <None Include="shader\GroundVertexShader.vert" />
     <None Include="shader\MainFragmentShader.frag" />
     <None Include="shader\MainVertexShader.vert" />
     <None Include="shader\NewFragmentShader.frag" />
     <None Include="shader\NewVertexShader.vert" />
     <None Include="shader\SilhouetteLines.frag" />
     <None Include="shader\SilhouetteLines.vert" />
+    <None Include="shader\SkyBoxFragmentShader.frag" />
+    <None Include="shader\SkyBoxVertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper\aabb.h" />

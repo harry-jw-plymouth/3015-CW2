@@ -1,62 +1,75 @@
 #version 460
 
-//general parameters 
-
-layout(location = 0) out vec4 FragColor;
 layout (binding=0) uniform sampler2D MainTexture;
-in vec2 VTexCoords;
+layout(binding=1) uniform sampler2D MixedTexture;
+layout(binding=2) uniform sampler2D NoiseTex;
 
-in vec3 Position;
-in vec3 Normal; 
+in vec2 GTexCoord;
 
-//0 is PBR for metals
-// 1 is texture
-uniform int RenderType;
-uniform int RenderMode;
+
 
 // PBR parameters
 const float PI=3.1415926535358979323846;
 
-//pbr structs 
-uniform struct LightInfo{
+//pbr structs
+uniform struct PBRLightInfo{
 	vec4 Position; //Light position in camera coords
 	vec3 L; // Intensity 
-} Light[4];
+} PBRLight[4];
+
+uniform struct PBRMaterialInfo{
+	float Rough; //Roughness
+	bool Metal; // Metallic(true) or dielectric(false)
+	vec3 Color; // diffuse color for dielectrics, f0 for metals
+	vec3 Ka; 
+	vec3 Kd; 
+	vec3 Ks; 
+	float shininess; 
+}PBRMaterial;
+
+
+uniform mat4 Slice;
+
+uniform float LowThreshold;
+uniform float HighThreshold;
+
+
+
+uniform vec4 LineColor;
+
+in vec3 GWorldPos;
+in vec3 Gposition;
+in vec3 GNormal;
+
+flat in int GIsEdge;
+uniform int RenderMode; 
+//0 is textured, 1 is untextured
+
+uniform int TextureMixingOn; 
+//0 mixng off, 1 mixing on 
+
+uniform int EdgeOn;
+layout(location=0) out vec4 FragColor;
+
+uniform int DisintegrationOn;
+//0 is off ,1 is on
 
 //toon shading levels
 const int levels =3;
 const float scaleFactor=1.0/levels;
 
-uniform struct MaterialInfo{
-	float Rough; //Roughness
-	bool Metal; // Metallic(true) or dielectric(false)
-	vec3 Color; // diffuse color for dielectrics, f0 for metals
-}Material;
-
-//PBR functions
-
-float ggxDistribution(float nDotH){ 
-	float alpha2=Material.Rough*Material.Rough*Material.Rough*Material.Rough;
-	float d=(nDotH*nDotH)*(alpha2-1) +1;
-	return alpha2/(PI*d*d);
-}
-float geomSmith(float dotProd){
-	float k=(Material.Rough+1.0)*(Material.Rough+1.0)/8.0;
-	float denom=dotProd*(1.0-k)+k;
-	return 1.0/denom;
-}
 vec3 pbrToonShade(){ 
 	vec3 sum= vec3(0.0);
-	vec3 n=normalize(Normal);
+	vec3 n=normalize(GNormal);
 	
 	
 	for(int i=0; i <4;i++){
 		vec3 l=vec3(0.0);
-		vec3 LightI=Light[i].L;
-		if(Light[i].Position.w==0.0){ // directional light
-			l=normalize(Light[i].Position.xyz);
+		vec3 LightI=PBRLight[i].L;
+		if(PBRLight[i].Position.w==0.0){ // directional light
+			l=normalize(PBRLight[i].Position.xyz);
 		}else{
-			l=Light[i].Position.xyz-Position;
+			l=PBRLight[i].Position.xyz-Gposition;
 			float dist=length(l);
 			l=normalize(l);
 			LightI/=(dist*dist); //attenuation
@@ -66,16 +79,20 @@ vec3 pbrToonShade(){
 
 		vec3 base;
 		if(RenderMode==0){
-			base =texture(MainTexture,VTexCoords).rgb;
+			base =texture(MainTexture,GTexCoord).rgb;
 		}else{
-			base = Material.Color;
+			base = PBRMaterial.Color;
+		}
+		if(TextureMixingOn==1){
+			vec3 mixColor=texture(MixedTexture,GTexCoord).rgb;
+			base=mix(base,mixColor,0.3);
 		}
 
-		if(Material.Metal)
+		if(PBRMaterial.Metal)
         {
             base =base * 0.6;
         }//else{
-		//	base =texture(MainTexture,VTexCoords).rgb;
+		//	base =texture(MainTexture,GTexCoord).rgb;
 	//	}
 		
 		base=base *ToonValue*LightI;
@@ -83,39 +100,56 @@ vec3 pbrToonShade(){
 	}
     return sum;
 }
-
-
+//pbr functions
+float ggxDistribution(float nDotH){ 
+	float alpha2=PBRMaterial.Rough*PBRMaterial.Rough*PBRMaterial.Rough*PBRMaterial.Rough;
+	float d=(nDotH*nDotH)*(alpha2-1) +1;
+	return alpha2/(PI*d*d);
+}
+float geomSmith(float dotProd){
+	float k=(PBRMaterial.Rough+1.0)*(PBRMaterial.Rough+1.0)/8.0;
+	float denom=dotProd*(1.0-k)+k;
+	return 1.0/denom;
+}
 vec3 shlickFresnelWithTexture(float lDotH){
 	vec3 f0=vec3(0.04);
-	if(Material.Metal){
+	if(PBRMaterial.Metal){
 		if(RenderMode==0){
-			f0=texture(MainTexture,VTexCoords).rgb;
+			f0=texture(MainTexture,GTexCoord).rgb;
 		}
 		else{
-			f0=Material.Color;
+			f0=PBRMaterial.Color;
+		}
+		if(TextureMixingOn==1){
+			vec3 mixColor=texture(MixedTexture,GTexCoord).rgb;
+			f0=mix(f0,mixColor,0.3);
 		}
 		
 	}
 	return f0+(1-f0)*pow(1.0-lDotH,5);
 }
-
 vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 	vec3 diffuseBrdf=vec3(0.0); //metallic
-	vec3 TextureAlbedo=texture(MainTexture,VTexCoords).rgb;
-	if(!Material.Metal){
+	vec3 TextureAlbedo=texture(MainTexture,GTexCoord).rgb;
+
+	if(!PBRMaterial.Metal){
 		if(RenderMode==0){
 			diffuseBrdf= TextureAlbedo;
 		}
 		else{
-			diffuseBrdf=Material.Color;
+			diffuseBrdf=PBRMaterial.Color;
+		}
+		if(TextureMixingOn==1){
+			vec3 mixColor=texture(MixedTexture,GTexCoord).rgb;
+			diffuseBrdf=mix(diffuseBrdf,mixColor,0.3);
 		}
 	}
 
-	vec3 l=vec3(0.0),lightI=Light[lightIdx].L;
-	if(Light[lightIdx].Position.w==0.0){ // directional light
-		l=normalize(Light[lightIdx].Position.xyz);
+	vec3 l=vec3(0.0),lightI=PBRLight[lightIdx].L;
+	if(PBRLight[lightIdx].Position.w==0.0){ // directional light
+		l=normalize(PBRLight[lightIdx].Position.xyz);
 	}else{
-		l=Light[lightIdx].Position.xyz-position;
+		l=PBRLight[lightIdx].Position.xyz-position;
 		float dist=length(l);
 		l=normalize(l);
 		lightI/=(dist*dist); //attenuation
@@ -133,12 +167,36 @@ vec3 microfacetModel(int lightIdx,vec3 position, vec3 n){
 }
 
 
-
 void main(){
+	// check if it vertex is an edge set up by geometry shader
+	if(GIsEdge==1){
+		//check if edge lines uniform set to on, return flat black if on or discard if off
+		if(EdgeOn==1){
+			FragColor=LineColor;
+		}else{
+			discard;
+		}
+		return;
+	}
+	// check if disintegration effect turned on
+	if(DisintegrationOn==1){
+		
+		// samle noise texture and discared if within threshold declared earlier
+		vec4 slicedPos = Slice * vec4(GWorldPos, 1.0);
+		vec4 noise=texture(NoiseTex,slicedPos.xy);
+		if(noise.a<LowThreshold)
+		{
+			discard;
+		}
+		if(noise.a>HighThreshold){
+			discard;
+		}
+	}
+
 	vec3 sum=vec3(0.0);
-	vec3 n=normalize(Normal);
+	vec3 n=normalize(GNormal);
 	for(int i=0;i<4;i++){
-		sum+=microfacetModel(i,Position,n);
+		sum+=microfacetModel(i,Gposition,n);
 	}
 	//gamma
 	sum=pow(sum,vec3(1.0/2.2));
@@ -147,5 +205,4 @@ void main(){
 
 	vec3 Final=mix(sum, toon, 0.5);
 	FragColor=vec4(Final,1);
-
 }

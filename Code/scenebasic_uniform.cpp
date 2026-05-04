@@ -18,32 +18,21 @@ using std::endl;
 
 
 
-SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),teapot(5,glm::mat4(1.0f)),
+SceneBasic_Uniform::SceneBasic_Uniform() :plane(20,20,1,1),
 tPrev(0.0f),lightPos(5.0f,5.0f,5.0f,1.0f){
-    TestMesh = ObjMesh::loadWithAdjacency("media/spot/spot_triangulated.obj");
-
-
-    SwordMesh = ObjMesh::loadWithAdjacency("media/Sword.obj"); // needs replacing
+    SwordMesh = ObjMesh::loadWithAdjacency("media/Sword.obj");
     RockMesh = ObjMesh::loadWithAdjacency("media/Rock07-Base.obj");
 	TreeMesh = ObjMesh::loadWithAdjacency("media/Tree.obj");
 	ButterflyMesh = ObjMesh::loadWithAdjacency("media/Butterfly/_butterfly.obj");
-    //mesh = ObjMesh::load("media/swordInStone.obj");
-
 }
 void SceneBasic_Uniform::LoadTextures() {
     RockTexture= Texture::loadTexture("media/texture/rock/Rock07-Base-Diffuse.png");
     TreeTexture = Texture::loadTexture("media/texture/Bark.png");
-	//TreeTexture = Texture::loadTexture("media/texture/TreeTexture.png");
     ForestFloorTexture=Texture::loadTexture("media/texture/ForestFloor.png");
     ButterflyTexture = Texture::loadTexture("media/Butterfly/texture.bmp");
     MossTexture = Texture::loadTexture("media/texture/moss.png");
 }
-
-
-
-
 void SceneBasic_Uniform::Mouse_CallBack(double Xpos, double Ypos) {
-    // std::cout << "Moving mouse" << "\n";
      //Initially no last positions, so sets last positions to current positions
     if (mouseFirstEntry)
     {
@@ -91,21 +80,15 @@ void SceneBasic_Uniform::ProcessUserInput(int key, int action) {
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
             if (key == GLFW_KEY_W) {
                 EyeCoordinates += movementSpeed * CameraFront;
-                //  std::cout << "Key: " << key << std::endl;
             }
             else if (key == GLFW_KEY_A) {
                 EyeCoordinates -= normalize(cross(CameraFront, CameraUp)) * movementSpeed;
-                //  std::cout << "Key: " << key << std::endl;
             }
             else if (key == GLFW_KEY_S) {
                 EyeCoordinates -= movementSpeed * CameraFront;
-                //   std::cout << "Key: " << key << std::endl;
             }
             else if (key == GLFW_KEY_D) {
                 EyeCoordinates += normalize(cross(CameraFront, CameraUp)) * movementSpeed;
-
-
-                //std::cout << "Key: " << key << std::endl;
             }
         }
     }
@@ -119,11 +102,10 @@ void SceneBasic_Uniform::SetupSkybox() {
     model = mat4(1.0f);
     float angle = radians(90.0f);
     GLuint SkyBoxTexture = Texture::loadCubeMap("media/texture/ForestSkyBox/Forest");
-    //  GLuint SkyBoxTexture = Texture::loadHdrCubeMap("../Cw1/media/texture/Skybox/Forest/forest-skyboxes/Brudslojan");
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBoxTexture);
 
-    Shaders.use();
+    GroundShaders.use();
     
 }
 void SceneBasic_Uniform::initScene()
@@ -136,8 +118,8 @@ void SceneBasic_Uniform::initScene()
 
     SetUpNoise();
 
-    Shaders.use();
-    Shaders.setUniform("RenderType", 0);
+    GroundShaders.use();
+    GroundShaders.setUniform("RenderType", 0);
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
@@ -153,66 +135,59 @@ void SceneBasic_Uniform::initScene()
     lightAngle = 0.0f;
     lightRotationSpeed = 1.5f;
 
-    Shaders.setUniform("Light[0].L", vec3(45.0f));
-	Shaders.setUniform("Light[0].Position", view * lightPos);
-    Shaders.setUniform("Light[1].L", vec3(0.3f));
-    Shaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
-    Shaders.setUniform("Light[2].L", vec3(45.0f));
-    Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
-    Shaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
-    Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos, 1.0f));
+    //Setup lights for ground shaders
+    GroundShaders.setUniform("Light[0].L", vec3(45.0f));
+	GroundShaders.setUniform("Light[0].Position", view * lightPos);
+    GroundShaders.setUniform("Light[1].L", vec3(0.3f));
+    GroundShaders.setUniform("Light[1].Position", vec4(0,0.15f,-1.0f,0));
+    GroundShaders.setUniform("Light[2].L", vec3(45.0f));
+    GroundShaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    GroundShaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
+    GroundShaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos, 1.0f));
 
+    //Setup lights for main shaders
+    MainShaders.use();
+    MainShaders.setUniform("PBRLight[0].L", vec3(45.0f));
+    MainShaders.setUniform("PBRLight[0].Position", view * lightPos);
 
+    MainShaders.setUniform("PBRLight[1].L", vec3(0.3f));
+    MainShaders.setUniform("PBRLight[1].Position", vec4(0, 0.15f, -1.0f, 0));
 
-    CombinedShaders.use();
-   CombinedShaders.setUniform("PBRLight[0].L", vec3(45.0f));
-    CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
+    MainShaders.setUniform("PBRLight[2].L", vec3(45.0f));
+    MainShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
 
-    CombinedShaders.setUniform("PBRLight[1].L", vec3(0.3f));
-    CombinedShaders.setUniform("PBRLight[1].Position", vec4(0, 0.15f, -1.0f, 0));
+    //set sword light to not glow yet
+    // will be activated when butterflies found
+    MainShaders.setUniform("PBRLight[3].L", vec3(0.0f));
+    MainShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f), 1.0f));
 
-    CombinedShaders.setUniform("PBRLight[2].L", vec3(45.0f));
-    CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
-
-    CombinedShaders.setUniform("PBRLight[3].L", vec3(0.0f));
-    CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f), 1.0f));
-
-    //   CombinedShaders.setUniform("PBRLight[0].L", vec3(0.0f));
-    // //  CombinedShaders.setUniform("PBRLight[1].L", vec3(0.0f));
- //   CombinedShaders.setUniform("PBRLight[2].L", vec3(0.0f));
-
-    CombinedShaders.setUniform("PBRMaterial.Kd", 0.7f, 0.5f, 0.2f);
-    CombinedShaders.setUniform("PBRMaterial.Ka", 0.2f, 0.2f, 0.2f);
+    MainShaders.setUniform("PBRMaterial.Kd", 0.7f, 0.5f, 0.2f);
+    MainShaders.setUniform("PBRMaterial.Ka", 0.2f, 0.2f, 0.2f);
 
     //silhouette lines set up 
-
-    CombinedShaders.setUniform("EdgeWidth", 0.009f);
-    CombinedShaders.setUniform("PctExtend", 0.03f);
-    CombinedShaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
+    MainShaders.setUniform("EdgeWidth", 0.009f);
+    MainShaders.setUniform("PctExtend", 0.03f);
+    MainShaders.setUniform("LineColor", vec4(0.05f, 0.0f, 0.05f, 1.0f));
    
-    Shaders.use();
-    
-
+    GroundShaders.use();
 }
-
 void SceneBasic_Uniform::compile()
 {
     try {
-        CombinedShaders.compileShader("shader/SilhouetteLines.vert");
-        CombinedShaders.compileShader("shader/SilhouetteLines.frag");
-        CombinedShaders.compileShader("shader/Geometry_Shader.gs");
-        CombinedShaders.link();
+        MainShaders.compileShader("shader/MainVertexShader.vert");
+        MainShaders.compileShader("shader/MainFragmentShader.frag");
+        MainShaders.compileShader("shader/Geometry_Shader.gs");
+        MainShaders.link();
         
 
-        Shaders.compileShader("shader/MainVertexShader.vert");
-        Shaders.compileShader("shader/MainFragmentShader.frag");
-        Shaders.link();
-        Shaders.use();
+        GroundShaders.compileShader("shader/GroundVertexShader.vert");
+        GroundShaders.compileShader("shader/GroundFragmentShader.frag");
+        GroundShaders.link();
+        GroundShaders.use();
 
         SkyBoxShaders.compileShader("shader/SkyBoxVertexShader.vert");
         SkyBoxShaders.compileShader("shader/SkyBoxFragmentShader.frag");
         SkyBoxShaders.link();
-
 
     }
     catch (GLSLProgramException &e) {
@@ -220,7 +195,6 @@ void SceneBasic_Uniform::compile()
         exit(EXIT_FAILURE);
     }
 }
-
 void SceneBasic_Uniform::update(float t)
 {
     float deltaT = t - tPrev;
@@ -245,19 +219,21 @@ void SceneBasic_Uniform::update(float t)
 	CheckForButterflyCollisions();
 }
 void SceneBasic_Uniform::CheckForButterflyCollisions() {
-        for (int i = 0; i < 5; i++) {
-            if (!Butterfliesfound[i]) {
-                float distance = length(EyeCoordinates - (ButterflyPositions[i]+ButterflyModifiedPosition[i]));
-                if (distance < 1.0f) { 
-                    Butterfliesfound[i] = true;
-                    std::cout << "Butterfly " << i + 1 << " found!" << std::endl;
-                    CheckIfAllButerfliesFound();
-                }
+    // for each butterfly, check if current position is within a certain distance and if so declare if found
+    for (int i = 0; i < 5; i++) {
+        if (!Butterfliesfound[i]) {
+            float distance = length(EyeCoordinates - (ButterflyPositions[i] + ButterflyModifiedPosition[i]));
+            if (distance < 1.0f) {
+                Butterfliesfound[i] = true;
+                std::cout << "Butterfly " << i + 1 << " found!" << std::endl;
+                CheckIfAllButerfliesFound();
             }
-		}
+        }
+    }  
 }
 void SceneBasic_Uniform::CheckIfAllButerfliesFound() {
     ButterfliesAllFound = true;
+    //loop  through all butterflies, if all found set value to true so sword knows to update
     for (int i = 0; i < NumberOfButterFlies; i++) {
         if (!Butterfliesfound[i]) {
 			ButterfliesAllFound = false;
@@ -269,7 +245,7 @@ void SceneBasic_Uniform::CheckIfAllButerfliesFound() {
     }
 }
 void SceneBasic_Uniform::SetUpNoise() {
-    CombinedShaders.use();
+    MainShaders.use();
 
     // generate model for applying noise texture
     mat4 slice = mat4(1.0f);
@@ -278,7 +254,7 @@ void SceneBasic_Uniform::SetUpNoise() {
     slice = glm::scale(slice, vec3(2.0f, 2.0f, 1.0f));
     slice = glm::translate(slice, vec3(-0.35f, -0.5f, 1.0f));
 
-    CombinedShaders.setUniform("Slice", slice);
+    MainShaders.setUniform("Slice", slice);
 
     // generate noise tecture from helper class (From labs)
     GLuint noiseTex = NoiseTex::generate2DTex();
@@ -287,14 +263,8 @@ void SceneBasic_Uniform::SetUpNoise() {
 
     // set thresholds
 
-    CombinedShaders.setUniform("LowThreshold", 0.4f);
-    CombinedShaders.setUniform("HighThreshold", 0.7f);
-}
-void SceneBasic_Uniform::setMatrices() {
-    mat4 mv = view * model;
-    Shaders.setUniform("ModelViewMatrix", mv);
-    Shaders.setUniform("NormalMatrix", glm::mat3(mv));
-    Shaders.setUniform("MVP", projection * mv);
+    MainShaders.setUniform("LowThreshold", 0.4f);
+    MainShaders.setUniform("HighThreshold", 0.7f);
 }
 void SceneBasic_Uniform::SetMatricesDynamic(GLSLProgram &Shader) {
     mat4 mv = view * model;
@@ -307,7 +277,7 @@ void SceneBasic_Uniform::DrawSkyBox() {
     //draw sky
     mat4 model = mat4(1.0f);
 
-    glDepthMask(GL_FALSE);          // disable depth writes
+    glDepthMask(GL_FALSE);    
     glDepthFunc(GL_LEQUAL);
 
     SkyBoxShaders.use();
@@ -325,57 +295,50 @@ void SceneBasic_Uniform::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     DrawSkyBox();
 
-  //  Shaders.use();
-	//Shaders.setUniform("Light[0].Position", view * lightPos);
-
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0f, 1.0f);
 
-    Shaders.use();
-    Shaders.setUniform("Light[0].Position", view * lightPos);
-    Shaders.setUniform("Light[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
-    Shaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
-    Shaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos + vec3(0.0f, 0.5f, 0.0f)+SwordModifiedPos, 1.0f));
-    Shaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
+    // update light Positions for ground shaders
+    GroundShaders.use();
+    GroundShaders.setUniform("Light[0].Position", view * lightPos);
+    GroundShaders.setUniform("Light[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
+    GroundShaders.setUniform("Light[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    GroundShaders.setUniform("Light[3].Position", view * glm::vec4(SwordPos + vec3(0.0f, 0.5f, 0.0f)+SwordModifiedPos, 1.0f));
+    GroundShaders.setUniform("Light[3].L", vec3(SwordLightIntensity));
 
-    CombinedShaders.use();
-  //  CombinedShaders.setUniform("Light.Position", view * lightPos);
-    CombinedShaders.setUniform("PBRLight[0].Position", view * lightPos);
-    CombinedShaders.setUniform("PBRLight[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
-    CombinedShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
-    CombinedShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f)+SwordModifiedPos, 1.0f));
-    CombinedShaders.setUniform("PBRLight[3].L", vec3(SwordLightIntensity));
+    // update light Positions for main shaders
+    MainShaders.use();    MainShaders.setUniform("PBRLight[0].Position", view * lightPos);
+    MainShaders.setUniform("PBRLight[1].Position", view * vec4(0, 0.15f, -1.0f, 0));
+    MainShaders.setUniform("PBRLight[2].Position", view * glm::vec4(-7, 3, 7, 1));
+    MainShaders.setUniform("PBRLight[3].Position", view * glm::vec4(SwordPos+vec3(0.0f,0.5f,0.0f)+SwordModifiedPos, 1.0f));
+    MainShaders.setUniform("PBRLight[3].L", vec3(SwordLightIntensity));
 
-  //  Shaders.use();
     drawScene();
     glDisable(GL_POLYGON_OFFSET_FILL);
-
-
 }
 void SceneBasic_Uniform::drawScene() {
-    drawFloor();
-
+   drawFloor();
    DrawAllSwords();
-    DrawRock(vec3(-0.0f, -0.5f, 3.0f));
+   DrawRock(vec3(-0.0f, -0.5f, 3.0f));
    DrawAllTrees();
    DrawAllButterflies();
-   // DrawRock(vec3(3.0f, -0.5f, 3.0f));
-   
-    //
 }
 void SceneBasic_Uniform::MoveSwordAfterButterfliesFound() {
+    // moce sword up until it reaches a certain height, then play scene animation
     if (SwordPos.y < 1.5f) {
         SwordPos += vec3(0.0f, 0.0004f, 0.0f);
     }
     else {
         AnimateSword();
     }
+    // increase light intensity each frame until it reached 45f
     if(SwordLightIntensity<45.0f){
         SwordLightIntensity += 0.1f;
 	}
 	
 }
 void SceneBasic_Uniform::AnimateSword() {
+    // make sword bob between 2 heights 
     if (SwordMovingUp) {
 		SwordModifiedPos += vec3(0.0f, 0.0009f, 0.0f);
         if(SwordModifiedPos.y>0.4f){
@@ -390,50 +353,46 @@ void SceneBasic_Uniform::AnimateSword() {
     }
 }
 void SceneBasic_Uniform::DrawAllSwords() {
-
-
-    //draw metal cows
     float metalRough = 0.43f;
-  
-    //aluminium
+    //material for sword 
     drawSword(glm::vec3(SwordPos), metalRough, 1, glm::vec3(0.91f, 0.71f, 0.29f));
 
+    // if butterflies all found call function to update sword
     if (ButterfliesAllFound) {
         MoveSwordAfterButterfliesFound();
     }
 
 }
 void SceneBasic_Uniform::drawFloor() {
-    Shaders.use();
+    // set values for ground then draw plane wirh texture
+    GroundShaders.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ForestFloorTexture);
-	Shaders.setUniform("TextureMixingOn", 0);
-    Shaders.setUniform("RenderMode", 0);
-    Shaders.setUniform("EdgeOn", 0);
-    Shaders.setUniform("Material.Rough", 0.9f);
-    Shaders.setUniform("Material.Metal", 0);
-    Shaders.setUniform("Material.Color", glm::vec3(0.2f));
+	GroundShaders.setUniform("TextureMixingOn", 0);
+    GroundShaders.setUniform("RenderMode", 0);
+    GroundShaders.setUniform("EdgeOn", 0);
+    GroundShaders.setUniform("Material.Rough", 0.9f);
+    GroundShaders.setUniform("Material.Metal", 0);
+    GroundShaders.setUniform("Material.Color", glm::vec3(0.2f));
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
 
-    setMatrices();
-	//SetMatricesDynamic(CombinedShaders);
+	SetMatricesDynamic(GroundShaders);
     plane.render();
-    CombinedShaders.use();
-    CombinedShaders.setUniform("RenderMode", 1);
+    MainShaders.use();
+    MainShaders.setUniform("RenderMode", 1);
 }
-
 void SceneBasic_Uniform::DrawRock(const vec3& pos)
 {
+    // set values for rock then draw
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, RockTexture);
-  //  Shaders.setUniform("RenderType", 1);
-    CombinedShaders.use();
-    CombinedShaders.setUniform("DisintegrationOn", 0);
-    CombinedShaders.setUniform("TextureMixingOn", 0);
-    CombinedShaders.setUniform("EdgeOn", 1);
-    CombinedShaders.setUniform("RenderMode", 0);
+    MainShaders.use();
+    MainShaders.setUniform("DisintegrationOn", 0);
+    MainShaders.setUniform("TextureMixingOn", 0);
+    MainShaders.setUniform("EdgeOn", 1);
+    MainShaders.setUniform("RenderMode", 0);
     model = mat4(1.0f);
 
     model = glm::translate(model, pos);
@@ -442,82 +401,83 @@ void SceneBasic_Uniform::DrawRock(const vec3& pos)
         0.01f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-   // setMatrices();
-    SetMatricesDynamic(CombinedShaders);
+    SetMatricesDynamic(MainShaders);
     RockMesh->render();
-//	TestMesh->render();
-   // Shaders.use();
-   // Shaders.setUniform("RenderType", 0); 
 }
-
 void SceneBasic_Uniform::drawSword(const vec3& pos, float rough, int metal, const vec3& color)
 {
-    CombinedShaders.use();
-    CombinedShaders.setUniform("TextureMixingOn", 0);
+    MainShaders.use();
+    // if butterflies stil lto be found, display sword with disintegration for damaged effect, if all found, stop displaying disintegration to show sword as repaired
+    MainShaders.setUniform("TextureMixingOn", 0);
     if (ButterfliesAllFound) {
-        CombinedShaders.setUniform("DisintegrationOn", 0);
+        MainShaders.setUniform("DisintegrationOn", 0);
     }
     else {
-        CombinedShaders.setUniform("DisintegrationOn", 1);
+        MainShaders.setUniform("DisintegrationOn", 1);
     }
-    CombinedShaders.setUniform("RenderMode", 1);
-    CombinedShaders.setUniform("ModelMatrix", model);
-    CombinedShaders.setUniform("EdgeOn", 1);
-    CombinedShaders.setUniform("PBRMaterial.Rough", rough);
-    CombinedShaders.setUniform("PBRMaterial.Metal", metal);
-    CombinedShaders.setUniform("PBRMaterial.Color", color);
+
+    // set values for sword
+    MainShaders.setUniform("RenderMode", 1);
+    MainShaders.setUniform("ModelMatrix", model);
+    MainShaders.setUniform("EdgeOn", 1);
+    MainShaders.setUniform("PBRMaterial.Rough", rough);
+    MainShaders.setUniform("PBRMaterial.Metal", metal);
+    MainShaders.setUniform("PBRMaterial.Color", color);
     model = mat4(1.0f);
     
+    // set position for sword then draw
     model = glm::translate(model, pos+SwordModifiedPos);
     model = glm::scale(model, vec3(  0.1f));
-  //  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-    
- //   setMatrices();
-    
-    CombinedShaders.setUniform("RenderMode", 1);
-    SetMatricesDynamic(CombinedShaders);
+    MainShaders.setUniform("RenderMode", 1);
+    SetMatricesDynamic(MainShaders);
     SwordMesh->render();
-    //TestMesh->render();
 }
 void SceneBasic_Uniform::DrawButterfly(const vec3& pos,int i) {
     model = mat4(1.0f);
 
+    //set position and shader data for butterfly then draw
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ButterflyTexture);
-    CombinedShaders.setUniform("TextureMixingOn", 0);
-    CombinedShaders.setUniform("DisintegrationOn", 0);
-    CombinedShaders.setUniform("RenderMode", 0);
-    CombinedShaders.setUniform("EdgeOn", 0);
+    MainShaders.setUniform("TextureMixingOn", 0);
+    MainShaders.setUniform("DisintegrationOn", 0);
+    MainShaders.setUniform("RenderMode", 0);
+    MainShaders.setUniform("EdgeOn", 0);
+
     model = glm::translate(model, pos);
     model=glm::rotate(model, radians(RotationValues[i]), vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, vec3(0.005f));
-  //  model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(0.0f, 1.0f, 0.0f));
-    SetMatricesDynamic(CombinedShaders);
+
+    SetMatricesDynamic(MainShaders);
     ButterflyMesh->render();
 }
 void SceneBasic_Uniform::DrawTree(const vec3& pos, const vec3& Scale) {
     model = mat4(1.0f);
+    //set position and shader data for tree then draw
 
+    //set textures including mixing texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, TreeTexture);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, MossTexture);
-    CombinedShaders.setUniform("RenderMode", 0);
-    CombinedShaders.setUniform("TextureMixingOn", 1);
-    CombinedShaders.setUniform("EdgeOn", 0);
+
+    MainShaders.setUniform("RenderMode", 0);
+    MainShaders.setUniform("TextureMixingOn", 1);
+    MainShaders.setUniform("EdgeOn", 0);
+
     model = glm::translate(model, pos);
     model = glm::scale(model, Scale);
-    //model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
-    SetMatricesDynamic(CombinedShaders);
+
+    SetMatricesDynamic(MainShaders);
     TreeMesh->render();
- //   TestMesh->render();
+
 }
 void SceneBasic_Uniform::UpdateButterflyPositions() {
     for (int i = 0; i < 5; i++) {
+        // move butterflies back and forth
         if (ButterfliesMovingUp[i]) {
             ButterflyModifiedPosition[i] += (vec3(0.0f, ButterflySpeeds[i], 0.0f));
         }
@@ -530,19 +490,21 @@ void SceneBasic_Uniform::UpdateButterflyPositions() {
         else {
             ButterflyModifiedPosition[i] -= (vec3( ButterflySpeeds[i],0.0f, 0.0f));
         }
+        ///if just changed direction,rotate for 16 frames to do it smoothly
         if (RotationFrames[i] < 16) {
             RotationValues[i] += 11.25;
             RotationFrames[i]++;
         }
         
-
-
+        // if butterfly hit max/min height, make butterfly start moving opposite way
         if (ButterflyModifiedPosition[i].y > 1.5f) {
             ButterfliesMovingUp[i] = false;
         }
         if (ButterflyModifiedPosition[i].y < 0.5f) {
             ButterfliesMovingUp[i] = true;
         }
+
+        // if butterfly hit max/min distance, make butterfly start moving opposite way
         if (ButterflyModifiedPosition[i].x > 2.5f) {
             ButterfliesMovingForward[i] = false;
             RotationFrames[i] = 0;
@@ -555,6 +517,7 @@ void SceneBasic_Uniform::UpdateButterflyPositions() {
 }
 void SceneBasic_Uniform::DrawAllButterflies() {
     
+    // update butterflies positions, check if theyre found, and if theyre not, draw them at that position
     UpdateButterflyPositions();
     for(int i=0;i<std::size(ButterflyPositions);i++){
         if (!Butterfliesfound[i]) {
@@ -566,6 +529,8 @@ void SceneBasic_Uniform::DrawAllButterflies() {
 	//DrawButterfly(vec3(-2.0f, 0.0f, 2.0f));
 }
 void SceneBasic_Uniform::DrawAllTrees() {
+    // draw trees at various positions/sizes
+
     DrawTree(vec3(-2.0f, -1.0f, 2.0f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(2.5f, -1.0f, 2.4f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(-4.0f, -1.0f, 3.0f), vec3(1.0f, 1.5f, 1.0f));
@@ -573,22 +538,13 @@ void SceneBasic_Uniform::DrawAllTrees() {
     DrawTree(vec3(5.0f, -1.0f, 1.0f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(-5.0f, -1.0f, -2.0f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(-3.0f, -1.0f, -1.0f), vec3(1.0f, 1.5f, 1.0f));
-
     DrawTree(vec3(-1.2f, -1.0f, 1.0f), vec3(0.9f, 1.3f, 0.9f));
     DrawTree(vec3(1.5f, -1.0f, 0.5f), vec3(1.1f, 1.6f, 1.1f)); 
-
     DrawTree(vec3(-3.5f, -1.0f, 4.5f), vec3(0.9f, 1.4f, 0.9f));
-
-  
     DrawTree(vec3(3.5f, -1.0f, 5.5f), vec3(1.3f, 2.0f, 1.3f));
- //   DrawTree(vec3(1.0f, -1.0f, 6.0f), vec3(1.4f, 2.2f, 1.4f));
     DrawTree(vec3(-2.0f, -1.0f, 6.5f), vec3(1.5f, 2.3f, 1.5f));
-
-  //  DrawTree(vec3(6.5f, -1.0f, -1.5f), vec3(1.2f, 1.6f, 1.2f));
     DrawTree(vec3(6.0f, -1.0f, 2.5f), vec3(1.0f, 1.5f, 1.0f));
     DrawTree(vec3(-6.5f, -1.0f, 1.5f), vec3(1.2f, 1.7f, 1.2f));
-  //  DrawTree(vec3(-6.0f, -1.0f, -3.5f), vec3(1.1f, 1.6f, 1.1f));
-    
 }
 void SceneBasic_Uniform::resize(int w, int h)
 {

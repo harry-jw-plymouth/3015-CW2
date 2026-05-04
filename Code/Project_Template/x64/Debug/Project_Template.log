@@ -1,23 +1,46 @@
-﻿  scenebasic_uniform.cpp
+﻿  main.cpp
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(24,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'main.cpp')
+  
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(25,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'main.cpp')
+  
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,9): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,35): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+  scenebasic_uniform.cpp
 C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(24,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'scenebasic_uniform.cpp')
   
 C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(25,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'scenebasic_uniform.cpp')
   
-C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(108,9): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,9): warning C4305: 'initializing': truncation from 'double' to 'float'
   (compiling source file 'scenebasic_uniform.cpp')
   
-C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(108,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,15): warning C4305: 'initializing': truncation from 'double' to 'float'
   (compiling source file 'scenebasic_uniform.cpp')
   
-C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(108,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,21): warning C4305: 'initializing': truncation from 'double' to 'float'
   (compiling source file 'scenebasic_uniform.cpp')
   
-C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(108,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,28): warning C4305: 'initializing': truncation from 'double' to 'float'
   (compiling source file 'scenebasic_uniform.cpp')
   
-C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(108,35): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\scenebasic_uniform.h(104,35): warning C4305: 'initializing': truncation from 'double' to 'float'
   (compiling source file 'scenebasic_uniform.cpp')
   
+  Generating Code...
   Project_Template.vcxproj -> C:\Uni stuff\Year 3\comp 3015\Coursework\Cw2\3015-CW2\Code\x64\Debug\Project_Template.exe
