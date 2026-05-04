@@ -99,6 +99,8 @@ Ground: https://www.magnific.com/free-photo/photo-ground-texture-pattern_1981632
 Bark: https://www.magnific.com/free-vector/dark-wood-texture_1036321.htm#fromView=keyword&page=1&position=20&uuid=40d5d19b-9995-44c6-bb17-8d353f1b190d&query=Bark+texture  <br>
 
  # Use of AI statement
+ ![Ai use allowance](Images/AcceptableAIUse.png)
+ ![Signature](Images/Signature.png)
  AI was used throughout this project as a coding assistant (as specified as allowed in the coursework specifications). There were a variety of areas where this was used as detailed below<br><br>
  ## Code assistant 
 One key area this was used was in assisting with setting up different shading features. An example of this was when setting up the disintegration, there was some issues with getting it to work with the existence of geometry shader, so following AIs advice I was able to set up and pass values as needed to be used for this purpose. <br> 
