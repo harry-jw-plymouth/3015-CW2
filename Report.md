@@ -62,8 +62,7 @@ The way this worked was that in the C++, a noise texture would be generated and 
 
 In the shaders, the geometery shader will pass the position data for the noise texture to the fragement shader. In the fragment shader, the noise texture is then sampled in relation to the slice texture set up earlier. When sampling this texture, if the noise value sampled is between the threshold declared earlier then that fragment is discarded creating the effect of damage/chipping to the sword <br />
 ![Disintergation](Images/DisintegrationCode.png) 
-
-<br /><br />
+<br />
 
 Please note, the code for this was taken from the lab 9 excercise 3 code and adapted for use wih the other shader
 ## Multiple shaders 
@@ -100,7 +99,7 @@ Bark: https://www.magnific.com/free-vector/dark-wood-texture_1036321.htm#fromVie
 
  # Use of AI statement
  ![Ai use allowance](Images/AcceptableAIUse.png)
- ![Signature](Images/Signature.png)
+ ![Signature](Images/Signature.png)<br />
  AI was used throughout this project as a coding assistant (as specified as allowed in the coursework specifications). There were a variety of areas where this was used as detailed below<br><br>
  ## Code assistant 
 One key area this was used was in assisting with setting up different shading features. An example of this was when setting up the disintegration, there was some issues with getting it to work with the existence of geometry shader, so following AIs advice I was able to set up and pass values as needed to be used for this purpose. <br> 
