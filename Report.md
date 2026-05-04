@@ -58,15 +58,14 @@ If it is not an edge, then the PBR code is run through (details of this can be s
 This is then mixed with the PBR calculation seen earlier to create the mixed look the shader aims for . In addition, the mixing can be controlled with one shading technique given bias to have more of a focus compared to the other if it makes sense, this is controlled by the value in the line where the 2 are mixed with 0.5 being balanced and increasing or decreasing the value (it must stay between 0 and 1) increasing the prevalence of one of the techniques. <br /><br />
 The edge lines can be controlled and adjusted with 2 variables. PctExtend increases the length of the silhouette, allowing for control of how silhouettes overlap. Edgewidth determines how wide the edges actually are, allowing for control over how thick/thin the lines should be and also giving the option between more bold lines or more subtle lines depending on the situation.<br />
 
-
-Please note,the code for this technique was an adapted version of the code seen in lab 6 part 3, the geometry shader is essentially 1:1 with said code. 
+Please note,the code for this technique was an adapted version of the code seen in lab 6 part 3, the geometry shader is almost identical but passes some extra positional data.
 
 # What makes your shader program special and how does it compare to similar things? 
-My shader program is special in the way it combines PBR and cell shading/silhouette lines 
+My shader program is special in the way it combines PBR and cell shading/silhouette lines. These 2 techniques are not typically seen together. Where PBR is used for realistic looking shaders and toon shading is designed for less realistic cartoonish looks they dont ussually have a reason to interact. So my shaders are special in the way that it has a mix of cartoon style and realistic style in a way you normally would not see. Most existing shaders will lean into one or the other making my shader stand out.
 
 # Anything else which will help us to understand how your prototype works 
 ## Gameplay description 
-Some very basic gameplay was added to help the scene come alive. In this gameplay, there is a set of 5 butterflies moving around the scene. When the player collides with a butterfly, that butterfly is counted as collected and will disappear. When all 5 are collected, the game will be seen as completed, and as a result of the game being completed the sword will rise from the stone and begin to glow. It is very simple gameplay but it acts as a method of giving the player a task to complete
+Some very basic gameplay was added to help the scene come alive. In this gameplay, there is a set of 5 butterflies moving around the scene. When the player collides with a butterfly, that butterfly is counted as collected and will disappear. When all 5 are collected, the game will be seen as completed, and as a result of the game being completed the sword will rise from the stone and begin to glow, the disintegration effect will also be turned off to allow for the sword to look as if it repaired itself. It is very simple gameplay but it acts as a method of giving the player a task to complete while showing off the shaders.
 
 ## Code origins
 The code used in the program was taken mostly from lab sessions and then combined and adjusted to fit the purposes of this project.<br>
