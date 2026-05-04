@@ -27,13 +27,15 @@ The vertex shader is the first step of the shader pipeline and it lays the essen
 The following stages rely on the vertex shader as the position and Normal data transformed and set up here are used in the geometry shader for detecting whether something is an edge for silhouette lines and used in fragment shader for lighting calculations.
 ### geometry shader 
 The next step in the shader pipeline was the geometry shader <br />
-Using the MVP matrix seen in vertex shader, whole triangles potentially see transformations. In most cases the vertices do not see transformations, but in some cases a triangle may be determined to be an edge, in which case extra geometry is generated to act as the edge which is also flagged to determine it is an edge. This is then passed to the fragment shader. <br /> 
-The process of this is included to allow for silhouette lines to be included, for more details please see the relevant section below
+Using the MVP matrix seen in vertex shader, whole triangles potentially see transformations. In most cases the vertices do not see transformations, but in some cases a triangle may be determined to be an edge, in which case extra geometry is generated to act as the edge which is also flagged to determine it is an edge. This is then passed to the fragment shader. In addition.  <br /> 
+The process of this is included to allow for silhouette lines to be included, for more details please see the relevant section below. positional data for the nosie texture is passed here <br/>
 ### Fragment shader 
 The final step is the fragment shader, where all the data set up previously can finally be turned into the output colour of the shader <br />
-The first step fragment shader takes is to check if the geometry it is providing colour for is an edge. If it is then the shader will simply return the colour black. <br /> 
-Otherwise, the geometry will have PBR applied and then get overlayed by a toon shading method to create the final colour which is then returned and displayed on the object.  <br />
+The first step fragment shader takes is to check if the geometry it is providing colour for is an edge. If it is then the shader will simply return the colour black. Creating the effect of a black outline on any models this is added for, this can be toggled on and off <br /> 
+Following this, a check will be done using a noise texture, if the value of the texture is within a certain freshold, that vertex is discarded which creates a disintegration effect. This can be toggled on and off so some models can have a damaged look while others can remain looking normal. More details on this can be seen in the section below for individual techniques <br/>
+Otherwise, the geometry will have PBR applied and then get overlayed by a toon shading method to create the final colour which is then returned and displayed on the object. This can be swapped between using a flat colour or texture sampling for more options when setting up the scene. In additon texture mixing can be toggled on and off for even more options<br />
 For more details on the toon shading, silhouette lines and PBR please see the section below detailing the individual techniques 
+
 
 ## Individual techniques 
 This section details the individual techniques that come together to make up the shaders
@@ -43,8 +45,10 @@ It was chosen over other lighting models (e.g Blinn Phong) due to the extra deta
 In my code, PBR exists as part of the fragment shader, where normals and position data is already set up by the vertex shader. The first step the PBR code takes is normalising the Normal value followed by applying the microfacet model. <br /> 
 In the process of applying the micro facet model, the first step is checking if the material is a metal which is done using the value in the material struct. If it is not a metal, the diffuse colour is set to the colour defined in the struct. This is important as it ensure Dielectrics do not end up too shiny.The next step is determining the lights direction where the the intensity of the light is increased based on the distance from the light, this is what is known as attenuation and it is important as otherwise the mesh would be equally bright regardless of its position in relation to the light. The next step sees the position vector and halfway vectors normalised to ensure correct calculations. This is then followed by a set of dot product calculations which are then used to calculate the specular value. This is a set of values multiplied together to make up the final value which makes use of ggxDistribution (controls how rough the surface looks by adding some variance to highlights), shlickFresnel(determines how reflective the material is relative to the angle of the light) and geomsmith (controls what part of the mesh is blocked) calculations <br /> 
 The microfacet model was applied multiple times,once for every light. The value of each application was totalled up and then used for gamma correction. This was the final step needed before it could be mixed with toon shading and then returned as the frag colour <br /> 
+In addition, multiple different options were included for the colour for drawing the model. The scene can swap between drawing with a texture or a flat colour with a simple setting of a uniform. This means that models with a full texture for them (e.g the butterfly) can be drawn with that, but if a model does not have a texture (e.g the sword), then the model can still be drawn in a colour that looks correct. In addition to this texture mixing is included as an option, this is toggleable for differant purposes. For example the sword has no texture mixing, but the trees use it as a way to make it look like there are leaves and greenery.
 
-Please note, the code from lab 10 was used as a base and adapted for this project 
+Please note, the code from lab 10 was used as a base and adapted for this project <br />
+Please also note, texture mixing was taken from my CW1 and adapted to be toggleable. <br />
 ## Silhouette lines and toon shading
 Another key technique used was silhouette lines with toon shading. This was used to give a cartoon look which makes the shading a lot more stylised and unique, and it created an interesting contrast by being combined with the more realistic element of the physic based rendering. <br /> 
 <br />
