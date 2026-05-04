@@ -60,12 +60,21 @@ The edge lines can be controlled and adjusted with 2 variables. PctExtend increa
 
 Please note,the code for this technique was an adapted version of the code seen in lab 6 part 3, the geometry shader is almost identical but passes some extra positional data.
 
+## Noise and disintegration effect
+To add the effect of the sword being damaged with chunks missing, a disintegration effect was used. To ensure other models were not affected this could be toggled on and off by setting a uniform. <br />
+The way this worked was that in the C++, a noise texture would be generated and then passed into the shader. In addition a slice model was set up to determine how noise would be sampled. Finnally the threshold for noise detection was declared and sent to the shader <br/>
+
+In the shaders, the geometery shader will pass the position data for the noise texture to the fragement shader. In the fragment shader, the noise texture is then sampled in relation to the slice texture set up earlier. When sampling this texture, if the noise value sampled is between the threshold declared earlier then that fragment is discarded creating the effect of damage/chipping to the sword <br /><br />
+
+Please note, the code for this was taken from the lab 9 excercise 3 code and adapted for use wih the other shader
+
 # What makes your shader program special and how does it compare to similar things? 
 My shader program is special in the way it combines PBR and cell shading/silhouette lines. These 2 techniques are not typically seen together. Where PBR is used for realistic looking shaders and toon shading is designed for less realistic cartoonish looks they dont ussually have a reason to interact. So my shaders are special in the way that it has a mix of cartoon style and realistic style in a way you normally would not see. Most existing shaders will lean into one or the other making my shader stand out.
 
 # Anything else which will help us to understand how your prototype works 
 ## Gameplay description 
-Some very basic gameplay was added to help the scene come alive. In this gameplay, there is a set of 5 butterflies moving around the scene. When the player collides with a butterfly, that butterfly is counted as collected and will disappear. When all 5 are collected, the game will be seen as completed, and as a result of the game being completed the sword will rise from the stone and begin to glow, the disintegration effect will also be turned off to allow for the sword to look as if it repaired itself. It is very simple gameplay but it acts as a method of giving the player a task to complete while showing off the shaders.
+Some very basic gameplay was added to help the scene come alive. In this gameplay, there is a set of 5 butterflies moving around the scene. When the player collides with a butterfly, that butterfly is counted as collected and will disappear. When all 5 are collected, the game will be seen as completed, and as a result of the game being completed the sword will rise from the stone and begin to glow, the disintegration effect will also be turned off to allow for the sword to look as if it repaired itself. It is very simple gameplay but it acts as a method of giving the player a task to complete while showing off the shaders. <br />
+
 
 ## Code origins
 The code used in the program was taken mostly from lab sessions and then combined and adjusted to fit the purposes of this project.<br>
@@ -90,6 +99,7 @@ Bark: https://www.magnific.com/free-vector/dark-wood-texture_1036321.htm#fromVie
  AI was used throughout this project as a coding assistant (as specified as allowed in the coursework specifications). There were a variety of areas where this was used as detailed below<br><br>
 One key area this was used was in assisting with setting up different shading features. An example of this was when setting up the disintegration, there was some issues with getting it to work with the existence of geometry shader, so following AIs advice I was able to set up and pass values as needed to be used for this purpose. <br> 
 Another example of how this was used was when setting up the PBR to work with the toon shading. Initially I had a much more simple toon shade set up that didnt interact as much with the PBR code. However this didnt give the desired PBR look the project was initally built around. So in this case the AI suggested and assisted in implementing the pbr toon shade function and the idea of mixing regular pbr and the toon shade pbr for the final result
+It was also used as a key assistant in debugging issues, for example when th
 
 
 # Github repository link
